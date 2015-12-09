@@ -3,13 +3,13 @@ Knife
 
 Knife is a rich text editor component for writing documents in Android.
 
-Support Android 4.0+.
+Support Android 4.0+
 
-## Thanks:
+## Thanks
 
  - [Squire](https://github.com/neilj/Squire "Squire")
 
-## License:
+## License
 
     Copyright 2015 Matthew Lee
 
