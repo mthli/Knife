@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "io.github.mthli.knifedemo"
-        minSdkVersion 21
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -21,5 +21,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':knife')
 }

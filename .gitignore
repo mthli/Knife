@@ -28,3 +28,4 @@ proguard/
 
 # Other
 .idea/
+*.iml
