@@ -17,6 +17,7 @@ public class KnifeText extends EditText {
         super(context, attrs, defStyleAttr);
     }
 
+    @SuppressWarnings("NewApi")
     public KnifeText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }

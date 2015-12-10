@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <HorizontalScrollView android:id="@+id/tools"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_alignParentBottom="true"
+                          android:scrollbars="none">
+
+        <LinearLayout android:orientation="horizontal"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content">
+
+            <ImageButton android:id="@+id/bold"
+                         android:contentDescription="@null"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:src="@drawable/ic_format_bold"
+                         android:scaleType="center"
+                         android:background="?android:selectableItemBackground">
+            </ImageButton>
+
+            <ImageButton android:id="@+id/italic"
+                         android:contentDescription="@null"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:src="@drawable/ic_format_italic"
+                         android:scaleType="center"
+                         android:background="?android:selectableItemBackground">
+            </ImageButton>
+
+            <ImageButton android:id="@+id/underlined"
+                         android:contentDescription="@null"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:src="@drawable/ic_format_underlined"
+                         android:scaleType="center"
+                         android:background="?android:selectableItemBackground">
+            </ImageButton>
+
+            <ImageButton android:id="@+id/strikethrough"
+                         android:contentDescription="@null"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:src="@drawable/ic_format_strikethrough"
+                         android:scaleType="center"
+                         android:background="?android:selectableItemBackground">
+            </ImageButton>
+
+            <ImageButton android:id="@+id/list_bulleted"
+                         android:contentDescription="@null"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:src="@drawable/ic_format_list_bulleted"
+                         android:scaleType="center"
+                         android:background="?android:selectableItemBackground">
+            </ImageButton>
+
+            <ImageButton android:id="@+id/list_numbered"
+                         android:contentDescription="@null"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:src="@drawable/ic_format_list_numbered"
+                         android:scaleType="center"
+                         android:background="?android:selectableItemBackground">
+            </ImageButton>
+
+            <ImageButton android:id="@+id/quote"
+                         android:contentDescription="@null"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:src="@drawable/ic_format_quote"
+                         android:scaleType="center"
+                         android:background="?android:selectableItemBackground">
+            </ImageButton>
+
+            <ImageButton android:id="@+id/link"
+                         android:contentDescription="@null"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:src="@drawable/ic_insert_link"
+                         android:scaleType="center"
+                         android:background="?android:selectableItemBackground">
+            </ImageButton>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <io.github.mthli.knife.KnifeText
+            android:id="@+id/knife"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/tools"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="top|start"
+            android:scrollbars="vertical"
+            android:background="@android:color/transparent">
+    </io.github.mthli.knife.KnifeText>
+
+</RelativeLayout>

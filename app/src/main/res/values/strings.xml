@@ -1,5 +1,13 @@
 <resources>
 
+    <!-- Demo -->
     <string name="app_name">KnifeDemo</string>
+
+    <!-- Menu -->
+    <string name="menu_insert_photo">Insert photo</string>
+    <string name="menu_format_clear">Format clear</string>
+    <string name="menu_import">Import</string>
+    <string name="menu_export">Export</string>
+    <string name="menu_about">About</string>
 
 </resources>
