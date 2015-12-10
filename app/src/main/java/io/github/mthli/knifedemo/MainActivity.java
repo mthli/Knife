@@ -6,18 +6,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import io.github.mthli.knife.KnifeText;
 
 public class MainActivity extends Activity {
-    private ImageButton bold;
-    private ImageButton italic;
-    private ImageButton underlined;
-    private ImageButton strikethrough;
-    private ImageButton listBulleted;
-    private ImageButton listNumbered;
-    private ImageButton quote;
-    private ImageButton link;
     private KnifeText knife;
 
     @Override
@@ -25,6 +18,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        knife = (KnifeText) findViewById(R.id.knife);
         setupBold();
         setupItalic();
         setupUnderlined();
@@ -33,85 +27,157 @@ public class MainActivity extends Activity {
         setupListNumbered();
         setupQuote();
         setupLink();
-        knife = (KnifeText) findViewById(R.id.knife);
     }
 
     private void setupBold() {
-        bold = (ImageButton) findViewById(R.id.bold);
+        ImageButton bold = (ImageButton) findViewById(R.id.bold);
+
         bold.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
+        bold.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_bold, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     private void setupItalic() {
-        italic = (ImageButton) findViewById(R.id.italic);
+        ImageButton italic = (ImageButton) findViewById(R.id.italic);
+
         italic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
+        italic.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_italic, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     private void setupUnderlined() {
-        underlined = (ImageButton) findViewById(R.id.underlined);
+        ImageButton underlined = (ImageButton) findViewById(R.id.underlined);
+
         underlined.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
+        underlined.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_underlined, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     private void setupStrikethrough() {
-        strikethrough = (ImageButton) findViewById(R.id.strikethrough);
+        ImageButton strikethrough = (ImageButton) findViewById(R.id.strikethrough);
+
         strikethrough.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
+        strikethrough.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_strikethrough, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     private void setupListBulleted() {
-        listBulleted = (ImageButton) findViewById(R.id.list_bulleted);
+        ImageButton listBulleted = (ImageButton) findViewById(R.id.list_bulleted);
+
         listBulleted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
+
+        listBulleted.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_list_bulleted, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     private void setupListNumbered() {
-        listNumbered = (ImageButton) findViewById(R.id.list_numbered);
+        ImageButton listNumbered = (ImageButton) findViewById(R.id.list_numbered);
+
         listNumbered.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
+        listNumbered.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_list_numbered, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     private void setupQuote() {
-        quote = (ImageButton) findViewById(R.id.quote);
+        ImageButton quote = (ImageButton) findViewById(R.id.quote);
+
         quote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
+        quote.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_quote, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     private void setupLink() {
-        link = (ImageButton) findViewById(R.id.link);
+        ImageButton link = (ImageButton) findViewById(R.id.link);
+
         link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        link.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_insert_link, Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
     }
@@ -119,7 +185,6 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
