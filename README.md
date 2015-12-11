@@ -12,6 +12,8 @@ __UNDER DEVELOPMENT__.
  - [Spans, a Powerful Concept.](http://flavienlaurent.com/blog/2014/01/31/spans/ "Spans, a Powerful Concept.")
  
  - [Spanned | Android Developers](http://developer.android.com/reference/android/text/Spanned.html "Spanned | Android Developers")
+ 
+ - [core/java/android/text/Html.java - Google Git](https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java "core/java/android/text/Html.java - Google Git")
 
 ## Thanks
 
