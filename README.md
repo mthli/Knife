@@ -10,6 +10,8 @@ __UNDER DEVELOPMENT__.
 ## Reference
 
  - [Spans, a Powerful Concept.](http://flavienlaurent.com/blog/2014/01/31/spans/ "Spans, a Powerful Concept.")
+ 
+ - [Spanned | Android Developers](http://developer.android.com/intl/zh-cn/reference/android/text/Spanned.html "Spanned | Android Developers")
 
 ## Thanks
 
