@@ -19,21 +19,32 @@ public class KnifeText extends EditText {
     public static final int FORMAT_LINK = 0x08;
     public static final int FORMAT_IMAGE = 0x09;
 
+    private int containsAlgorithm = 0;
+    private int spannedFlags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
+
     public KnifeText(Context context) {
         super(context);
+        init(null);
     }
 
     public KnifeText(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(attrs);
     }
 
     public KnifeText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(attrs);
     }
 
     @SuppressWarnings("NewApi")
     public KnifeText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(attrs);
+    }
+
+    private void init(AttributeSet attrs) {
+        // TODO
     }
 
     public boolean contains(int format)

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    
+    <declare-styleable name="KnifeText">
+
+        <!-- Decide what contains() algorithm to use -->
+        <attr name="containsAlgorithm" format="enum">
+            <enum name="AND" value="0" />
+            <enum name="OR" value="1" />
+        </attr>
+
+        <!-- Decide what Spanned flags to use -->
+        <attr name="spannedFlags" format="enum">
+            <enum name="INCLUSIVE_EXCLUSIVE" value="0x11" />
+            <enum name="INCLUSIVE_INCLUSIVE" value="0x12" />
+            <enum name="EXCLUSIVE_EXCLUSIVE" value="0x21" />
+            <enum name="EXCLUSIVE_INCLUSIVE" value="0x22" />
+        </attr>
+
+    </declare-styleable>
+    
+</resources>
