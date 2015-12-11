@@ -7,6 +7,10 @@ Support Android 4.0+
 
 __UNDER DEVELOPMENT__.
 
+## Reference
+
+ - [Spans, a Powerful Concept.](http://flavienlaurent.com/blog/2014/01/31/spans/ "Spans, a Powerful Concept.")
+
 ## Thanks
 
  - [Squire](https://github.com/neilj/Squire "Squire")
