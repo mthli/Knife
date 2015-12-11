@@ -36,8 +36,6 @@ public class KnifeText extends EditText {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    // Contains ====================================================================================
-
     public boolean contains(int format)
     {
         switch (format) {
@@ -65,6 +63,28 @@ public class KnifeText extends EditText {
     }
 
     private boolean containBold() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+
+        if (start == end) {
+            if (start - 1 < 0 || start + 1 > getEditableText().length()) {
+                return false;
+            } else {
+                StyleSpan[] before = getEditableText().getSpans(start - 1, start, StyleSpan.class);
+                StyleSpan[] after = getEditableText().getSpans(start, start + 1, StyleSpan.class);
+                if (before.length > 0 && after.length > 0 && before[0].getStyle() == Typeface.BOLD && after[0].getStyle() == Typeface.BOLD) {
+                    return true;
+                }
+            }
+        } else {
+            StyleSpan[] spans = getEditableText().getSpans(start, end, StyleSpan.class);
+            for (StyleSpan span : spans) {
+                if (span.getStyle() == Typeface.BOLD) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -99,8 +119,6 @@ public class KnifeText extends EditText {
     private boolean containImage() {
         return false;
     }
-
-    // Bold ========================================================================================
 
     public void bold(boolean valid) {
         if (valid) {
