@@ -2,6 +2,7 @@ package io.github.mthli.knifedemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +36,7 @@ public class MainActivity extends Activity {
         bold.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                knife.bold(!knife.contains(KnifeText.FORMAT_BOLD));
             }
         });
 

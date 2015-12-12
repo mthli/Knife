@@ -71,20 +71,24 @@ public class KnifeText extends EditText {
             } else {
                 StyleSpan[] before = getEditableText().getSpans(start - 1, start, StyleSpan.class);
                 StyleSpan[] after = getEditableText().getSpans(start, start + 1, StyleSpan.class);
-                if (before.length > 0 && after.length > 0 && before[0].getStyle() == Typeface.BOLD && after[0].getStyle() == Typeface.BOLD) {
-                    return true;
-                }
+                return before.length > 0 && after.length > 0 && before[0].getStyle() == Typeface.BOLD && after[0].getStyle() == Typeface.BOLD;
             }
         } else {
-            StyleSpan[] spans = getEditableText().getSpans(start, end, StyleSpan.class);
-            for (StyleSpan span : spans) {
-                if (span.getStyle() == Typeface.BOLD) {
-                    return true;
+            StringBuilder builder = new StringBuilder();
+
+            // Make sure no duplicate characters be added
+            for (int i = start; i < end; i++) {
+                StyleSpan[] spans = getEditableText().getSpans(i, i + 1, StyleSpan.class);
+                for (StyleSpan span : spans) {
+                    if (span.getStyle() == Typeface.BOLD) {
+                        builder.append(getEditableText().subSequence(i, i + 1).toString());
+                        break;
+                    }
                 }
             }
-        }
 
-        return false;
+            return getEditableText().subSequence(start, end).toString().equals(builder.toString());
+        }
     }
 
     private boolean containItalic() {
