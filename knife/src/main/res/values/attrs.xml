@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <declare-styleable name="KnifeText">
+        <attr name="bulletColor" format="reference|color" />
+        <attr name="bulletGapWidth" format="reference|integer" />
+    </declare-styleable>
+
+</resources>

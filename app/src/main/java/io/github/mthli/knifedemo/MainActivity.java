@@ -105,17 +105,17 @@ public class MainActivity extends Activity {
     }
 
     private void setupBullet() {
-        ImageButton listBulleted = (ImageButton) findViewById(R.id.bullet);
+        ImageButton bullet = (ImageButton) findViewById(R.id.bullet);
 
-        listBulleted.setOnClickListener(new View.OnClickListener() {
+        bullet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                knife.bullet(!knife.contains(KnifeText.FORMAT_BULLET));
             }
         });
 
 
-        listBulleted.setOnLongClickListener(new View.OnLongClickListener() {
+        bullet.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Toast.makeText(MainActivity.this, R.string.toast_bullet, Toast.LENGTH_SHORT).show();

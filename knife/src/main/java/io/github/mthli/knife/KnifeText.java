@@ -1,8 +1,10 @@
 package io.github.mthli.knife;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.text.Spanned;
+import android.text.style.BulletSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -17,27 +19,40 @@ public class KnifeText extends EditText {
     public static final int FORMAT_ITALIC = 0x02;
     public static final int FORMAT_UNDERLINED = 0x03;
     public static final int FORMAT_STRIKETHROUGH = 0x04;
-    public static final int FORMAT_LIST_BULLETED = 0x05;
-    public static final int FORMAT_LIST_NUMBERED = 0x06;
-    public static final int FORMAT_QUOTE = 0x07;
-    public static final int FORMAT_LINK = 0x08;
-    public static final int FORMAT_IMAGE = 0x09;
+    public static final int FORMAT_BULLET = 0x05;
+    public static final int FORMAT_QUOTE = 0x06;
+    public static final int FORMAT_LINK = 0x07;
+    public static final int FORMAT_IMAGE = 0x08;
+
+    private int bulletColor = -1;
+    private int bulletGapWidth = -1;
 
     public KnifeText(Context context) {
         super(context);
+        init(null);
     }
 
     public KnifeText(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(attrs);
     }
 
     public KnifeText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(attrs);
     }
 
     @SuppressWarnings("NewApi")
     public KnifeText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(attrs);
+    }
+
+    private void init(AttributeSet attrs) {
+        TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
+        bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, -1);
+        bulletGapWidth = array.getInt(R.styleable.KnifeText_bulletGapWidth, -1);
+        array.recycle();
     }
 
     // Contains ====================================================================================
@@ -52,10 +67,8 @@ public class KnifeText extends EditText {
                 return containUnderline(getSelectionStart(), getSelectionEnd());
             case FORMAT_STRIKETHROUGH:
                 return containStrikethrough(getSelectionStart(), getSelectionEnd());
-            case FORMAT_LIST_BULLETED:
-                return containListBulleted();
-            case FORMAT_LIST_NUMBERED:
-                return containListNumbered();
+            case FORMAT_BULLET:
+                return containBullet();
             case FORMAT_QUOTE:
                 return containQuote();
             case FORMAT_LINK:
@@ -65,14 +78,6 @@ public class KnifeText extends EditText {
             default:
                 return false;
         }
-    }
-
-    private boolean containListBulleted() {
-        return false;
-    }
-
-    private boolean containListNumbered() {
-        return false;
     }
 
     private boolean containQuote() {
@@ -343,4 +348,113 @@ public class KnifeText extends EditText {
             return getEditableText().subSequence(start, end).toString().equals(builder.toString());
         }
     }
+
+    // BulletSpan ==================================================================================
+
+    public void bullet(boolean valid) {
+        if (valid) {
+            bulletValid();
+        } else {
+            bulletInvalid();
+        }
+    }
+
+    private void bulletValid() {
+        for (int i = 0; i < getLayout().getLineCount(); i++) {
+            if (containBullet(i)) {
+                continue;
+            }
+
+            int lineStart = getLayout().getLineStart(i);
+            int lineEnd = getLayout().getLineEnd(i);
+            int bulletStart = 0;
+            int bulletEnd = 0;
+
+            // Find selection area inside
+            if (lineStart <= getSelectionStart() && getSelectionEnd() <= lineEnd) {
+                bulletStart = lineStart;
+                bulletEnd = lineEnd;
+            } else if (getSelectionStart() <= lineStart && lineEnd <= getSelectionEnd()) {
+                bulletStart = lineStart;
+                bulletEnd = lineEnd;
+            }
+
+            if (bulletStart < bulletEnd) {
+                if (bulletColor >= 0 && bulletGapWidth >= 0) {
+                    getEditableText().setSpan(new BulletSpan(bulletColor, bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                } else if (bulletGapWidth >= 0) {
+                    getEditableText().setSpan(new BulletSpan(bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                } else {
+                    getEditableText().setSpan(new BulletSpan(), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }
+        }
+    }
+
+    private void bulletInvalid() {
+        for (int i = 0; i < getLayout().getLineCount(); i++) {
+            if (!containBullet(i)) {
+                continue;
+            }
+
+            int lineStart = getLayout().getLineStart(i);
+            int lineEnd = getLayout().getLineEnd(i);
+            int bulletStart = 0;
+            int bulletEnd = 0;
+
+            // Find selection area inside
+            if (lineStart <= getSelectionStart() && getSelectionEnd() <= lineEnd) {
+                bulletStart = lineStart;
+                bulletEnd = lineEnd;
+            } else if (getSelectionStart() <= lineStart && lineEnd <= getSelectionEnd()) {
+                bulletStart = lineStart;
+                bulletEnd = lineEnd;
+            }
+
+            if (bulletStart < bulletEnd) {
+                BulletSpan[] spans = getEditableText().getSpans(bulletStart, bulletEnd, BulletSpan.class);
+                for (BulletSpan span : spans) {
+                    getEditableText().removeSpan(span);
+                }
+            }
+        }
+    }
+
+    private boolean containBullet() {
+        List<Integer> list = new ArrayList<>();
+
+        for (int i = 0; i < getLayout().getLineCount(); i++) {
+            int lineStart = getLayout().getLineStart(i);
+            int lineEnd = getLayout().getLineEnd(i);
+
+            // Find selection area inside
+            if (lineStart <= getSelectionStart() && getSelectionEnd() <= lineEnd) {
+                list.add(i);
+            } else if (getSelectionStart() <= lineStart && lineEnd <= getSelectionEnd()) {
+                list.add(i);
+            }
+        }
+
+        for (Integer i : list) {
+            if (!containBullet(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean containBullet(int line) {
+        if (line < 0 || line >= getLayout().getLineCount()) {
+            return false;
+        }
+
+        int start = getLayout().getLineStart(line);
+        int end = getLayout().getLineEnd(line);
+        BulletSpan[] spans = getEditableText().getSpans(start, end, BulletSpan.class);
+
+        return spans.length > 0;
+    }
+
+    // QuoteSpan ===================================================================================
 }
