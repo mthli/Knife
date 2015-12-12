@@ -3,6 +3,7 @@ package io.github.mthli.knife;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Spanned;
+import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
@@ -50,7 +51,7 @@ public class KnifeText extends EditText {
             case FORMAT_UNDERLINED:
                 return containUnderline(getSelectionStart(), getSelectionEnd());
             case FORMAT_STRIKETHROUGH:
-                return containStrikethrough();
+                return containStrikethrough(getSelectionStart(), getSelectionEnd());
             case FORMAT_LIST_BULLETED:
                 return containListBulleted();
             case FORMAT_LIST_NUMBERED:
@@ -64,10 +65,6 @@ public class KnifeText extends EditText {
             default:
                 return false;
         }
-    }
-
-    private boolean containStrikethrough() {
-        return false;
     }
 
     private boolean containListBulleted() {
@@ -268,6 +265,77 @@ public class KnifeText extends EditText {
             // Make sure no duplicate characters be added
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, UnderlineSpan.class).length > 0) {
+                    builder.append(getEditableText().subSequence(i, i + 1).toString());
+                }
+            }
+
+            return getEditableText().subSequence(start, end).toString().equals(builder.toString());
+        }
+    }
+
+    // StrikethroughSpan ===========================================================================
+
+    public void strikethrough(boolean valid) {
+        if (valid) {
+            strikethroughValid(getSelectionStart(), getSelectionEnd());
+        } else {
+            strikethroughInvalid(getSelectionStart(), getSelectionEnd());
+        }
+    }
+
+    private void strikethroughValid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        getEditableText().setSpan(new StrikethroughSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void strikethroughInvalid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        StrikethroughSpan[] spans = getEditableText().getSpans(start, end, StrikethroughSpan.class);
+        List<Part> list = new ArrayList<>();
+
+        for (StrikethroughSpan span : spans) {
+            list.add(new Part(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            getEditableText().removeSpan(span);
+        }
+
+        for (Part part : list) {
+            if (part.isValid()) {
+                if (part.getStart() < start) {
+                    strikethroughValid(part.getStart(), start);
+                }
+
+                if (part.getEnd() > end) {
+                    strikethroughValid(end, part.getEnd());
+                }
+            }
+        }
+    }
+
+    private boolean containStrikethrough(int start, int end) {
+        if (start > end) {
+            return false;
+        }
+
+        if (start == end) {
+            if (start - 1 < 0 || start + 1 > getEditableText().length()) {
+                return false;
+            } else {
+                StrikethroughSpan[] before = getEditableText().getSpans(start - 1, start, StrikethroughSpan.class);
+                StrikethroughSpan[] after = getEditableText().getSpans(start, start + 1, StrikethroughSpan.class);
+                return before.length > 0 && after.length > 0;
+            }
+        } else {
+            StringBuilder builder = new StringBuilder();
+
+            // Make sure no duplicate characters be added
+            for (int i = start; i < end; i++) {
+                if (getEditableText().getSpans(i, i + 1, StrikethroughSpan.class).length > 0) {
                     builder.append(getEditableText().subSequence(i, i + 1).toString());
                 }
             }

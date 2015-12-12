@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
         strikethrough.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                knife.strikethrough(!knife.contains(KnifeText.FORMAT_STRIKETHROUGH));
             }
         });
 
