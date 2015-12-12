@@ -130,7 +130,7 @@ public class MainActivity extends Activity {
         quote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                knife.quote(!knife.contains(KnifeText.FORMAT_QUOTE));
             }
         });
 
