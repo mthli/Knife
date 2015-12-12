@@ -50,20 +50,11 @@
                          android:background="?android:selectableItemBackground">
             </ImageButton>
 
-            <ImageButton android:id="@+id/list_bulleted"
+            <ImageButton android:id="@+id/bullet"
                          android:contentDescription="@null"
                          android:layout_width="48dp"
                          android:layout_height="48dp"
                          android:src="@drawable/ic_format_list_bulleted"
-                         android:scaleType="center"
-                         android:background="?android:selectableItemBackground">
-            </ImageButton>
-
-            <ImageButton android:id="@+id/list_numbered"
-                         android:contentDescription="@null"
-                         android:layout_width="48dp"
-                         android:layout_height="48dp"
-                         android:src="@drawable/ic_format_list_numbered"
                          android:scaleType="center"
                          android:background="?android:selectableItemBackground">
             </ImageButton>

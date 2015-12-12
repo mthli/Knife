@@ -23,8 +23,7 @@ public class MainActivity extends Activity {
         setupItalic();
         setupUnderline();
         setupStrikethrough();
-        setupListBulleted();
-        setupListNumbered();
+        setupBullet();
         setupQuote();
         setupLink();
     }
@@ -105,8 +104,8 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void setupListBulleted() {
-        ImageButton listBulleted = (ImageButton) findViewById(R.id.list_bulleted);
+    private void setupBullet() {
+        ImageButton listBulleted = (ImageButton) findViewById(R.id.bullet);
 
         listBulleted.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,26 +118,7 @@ public class MainActivity extends Activity {
         listBulleted.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_list_bulleted, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
-    }
-
-    private void setupListNumbered() {
-        ImageButton listNumbered = (ImageButton) findViewById(R.id.list_numbered);
-
-        listNumbered.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        listNumbered.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_list_numbered, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.toast_bullet, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

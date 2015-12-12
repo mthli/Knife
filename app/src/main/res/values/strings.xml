@@ -15,8 +15,7 @@
     <string name="toast_italic">Italic</string>
     <string name="toast_underline">Underline</string>
     <string name="toast_strikethrough">Strikethrough</string>
-    <string name="toast_list_bulleted">List bulleted</string>
-    <string name="toast_list_numbered">List numbered</string>
+    <string name="toast_bullet">Bullet</string>
     <string name="toast_quote">Quote</string>
     <string name="toast_insert_link">Insert link</string>
 
