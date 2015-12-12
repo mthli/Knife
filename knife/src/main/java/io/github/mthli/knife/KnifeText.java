@@ -274,7 +274,6 @@ public class KnifeText extends EditText {
         } else {
             StringBuilder builder = new StringBuilder();
 
-            // Make sure no duplicate characters be added
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, UnderlineSpan.class).length > 0) {
                     builder.append(getEditableText().subSequence(i, i + 1).toString());
@@ -345,7 +344,6 @@ public class KnifeText extends EditText {
         } else {
             StringBuilder builder = new StringBuilder();
 
-            // Make sure no duplicate characters be added
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, StrikethroughSpan.class).length > 0) {
                     builder.append(getEditableText().subSequence(i, i + 1).toString());
@@ -662,13 +660,39 @@ public class KnifeText extends EditText {
         }
     }
 
+    // TODO
     private boolean containLink(int start, int end) {
         if (start > end) {
             return false;
         }
 
-        // TODO
+        if (start == end) {
+            if (start - 1 < 0 || start + 1 > getEditableText().length()) {
+                return false;
+            } else {
+                URLSpan[] before = getEditableText().getSpans(start - 1, start, URLSpan.class);
+                URLSpan[] after = getEditableText().getSpans(start, start + 1, URLSpan.class);
+                return before.length > 0 && after.length > 0;
+            }
+        } else {
+            StringBuilder builder = new StringBuilder();
 
-        return false;
+            for (int i = start; i < end; i++) {
+                if (getEditableText().getSpans(i, i + 1, URLSpan.class).length > 0) {
+                    builder.append(getEditableText().subSequence(i, i + 1).toString());
+                }
+            }
+
+            return getEditableText().subSequence(start, end).toString().equals(builder.toString());
+        }
+    }
+
+    // ImageSpan ===================================================================================
+
+    // Clear =======================================================================================
+
+    public void clear() {
+        setText(getEditableText().toString());
+        setSelection(getEditableText().length());
     }
 }

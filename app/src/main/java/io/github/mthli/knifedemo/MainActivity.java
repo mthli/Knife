@@ -174,6 +174,7 @@ public class MainActivity extends Activity {
             case R.id.insert_photo:
                 break;
             case R.id.format_clear:
+                knife.clear();
                 break;
             case R.id.inport:
                 break;
