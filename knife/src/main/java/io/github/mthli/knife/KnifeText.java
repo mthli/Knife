@@ -2,16 +2,13 @@ package io.github.mthli.knife;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KnifeText extends EditText {
     public static final int FORMAT_BOLD = 0x01;
@@ -134,98 +131,45 @@ public class KnifeText extends EditText {
 
     public void bold(boolean valid) {
         if (valid) {
-            boldValid();
+            boldValid(getSelectionStart(), getSelectionEnd());
         } else {
-            boldInvalid();
+            boldInvalid(getSelectionStart(), getSelectionEnd());
         }
     }
 
-    private void boldValid() {
-        getEditableText().setSpan(new StyleSpan(Typeface.BOLD), getSelectionStart(), getSelectionEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    private void boldValid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        getEditableText().setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    private void boldInvalid() {
-        int selectionStart = getSelectionStart();
-        int selectionEnd = getSelectionEnd();
+    private void boldInvalid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
 
-        SpannableStringBuilder spanBuilder = new SpannableStringBuilder(getEditableText().subSequence(selectionStart, selectionEnd));
-        StyleSpan[] spans = spanBuilder.getSpans(0, spanBuilder.length(), StyleSpan.class);
+        StyleSpan[] spans = getEditableText().getSpans(start, end, StyleSpan.class);
+        List<Part> list = new ArrayList<>();
+
         for (StyleSpan span : spans) {
             if (span.getStyle() == Typeface.BOLD) {
-                spanBuilder.removeSpan(span);
+                list.add(new Part(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+                getEditableText().removeSpan(span);
             }
         }
 
-        SpannableStringBuilder contentBuilder = new SpannableStringBuilder();
-        contentBuilder.append(getEditableText().subSequence(0, selectionStart));
-        contentBuilder.append(spanBuilder);
-        contentBuilder.append(getEditableText().subSequence(selectionEnd, getEditableText().length()));
-        setText(contentBuilder);
-        setSelection(selectionStart, selectionEnd);
-        showSelections();
-    }
+        for (Part part : list) {
+            if (part.isValid()) {
+                if (part.getStart() < start) {
+                    boldValid(part.getStart(), start);
+                }
 
-    // Selection ===================================================================================
-    // http://stackoverflow.com/questions/22987855/how-to-show-selection-marker-on-edittext
-
-    @Override
-    public void onSelectionChanged(int selStart, int selEnd) {
-        if (selStart >= selEnd) {
-            hideSelections();
-        }
-
-        super.onSelectionChanged(selStart, selEnd);
-    }
-
-    private void showSelections() {
-        try {
-            Field mEditor = TextView.class.getDeclaredField("mEditor");
-            mEditor.setAccessible(true);
-            Object editor = mEditor.get(this);
-
-            Method getSelectionController = editor.getClass().getDeclaredMethod("getSelectionController");
-            getSelectionController.setAccessible(true);
-            Object controller = getSelectionController.invoke(editor);
-
-            if (controller != null) {
-                Method show = controller.getClass().getDeclaredMethod("show");
-                show.setAccessible(true);
-                show.invoke(controller);
+                if (part.getEnd() > end) {
+                    boldValid(end, part.getEnd());
+                }
             }
-        } catch (NoSuchFieldException n) {
-            n.printStackTrace();
-        } catch (NoSuchMethodException n) {
-            n.printStackTrace();
-        } catch (IllegalAccessException i) {
-            i.printStackTrace();
-        } catch (InvocationTargetException i) {
-            i.printStackTrace();
-        }
-    }
-
-    private void hideSelections() {
-        try {
-            Field mEditor = TextView.class.getDeclaredField("mEditor");
-            mEditor.setAccessible(true);
-            Object editor = mEditor.get(this);
-
-            Method getSelectionController = editor.getClass().getDeclaredMethod("getSelectionController");
-            getSelectionController.setAccessible(true);
-            Object controller = getSelectionController.invoke(editor);
-
-            if (controller != null) {
-                Method hide = controller.getClass().getDeclaredMethod("hide");
-                hide.setAccessible(true);
-                hide.invoke(controller);
-            }
-        } catch (NoSuchFieldException n) {
-            n.printStackTrace();
-        } catch (NoSuchMethodException n) {
-            n.printStackTrace();
-        } catch (IllegalAccessException i) {
-            i.printStackTrace();
-        } catch (InvocationTargetException i) {
-            i.printStackTrace();
         }
     }
 }
