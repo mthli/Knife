@@ -32,7 +32,7 @@
                          android:background="?android:selectableItemBackground">
             </ImageButton>
 
-            <ImageButton android:id="@+id/underlined"
+            <ImageButton android:id="@+id/underline"
                          android:contentDescription="@null"
                          android:layout_width="48dp"
                          android:layout_height="48dp"

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
@@ -47,7 +48,7 @@ public class KnifeText extends EditText {
             case FORMAT_ITALIC:
                 return containStyle(Typeface.ITALIC, getSelectionStart(), getSelectionEnd());
             case FORMAT_UNDERLINED:
-                return containUnderlined();
+                return containUnderline(getSelectionStart(), getSelectionEnd());
             case FORMAT_STRIKETHROUGH:
                 return containStrikethrough();
             case FORMAT_LIST_BULLETED:
@@ -63,10 +64,6 @@ public class KnifeText extends EditText {
             default:
                 return false;
         }
-    }
-
-    private boolean containUnderlined() {
-        return false;
     }
 
     private boolean containStrikethrough() {
@@ -201,6 +198,77 @@ public class KnifeText extends EditText {
                         builder.append(getEditableText().subSequence(i, i + 1).toString());
                         break;
                     }
+                }
+            }
+
+            return getEditableText().subSequence(start, end).toString().equals(builder.toString());
+        }
+    }
+
+    // UnderlineSpan ===============================================================================
+
+    public void underline(boolean valid) {
+        if (valid) {
+            underlineValid(getSelectionStart(), getSelectionEnd());
+        } else {
+            underlineInvalid(getSelectionStart(), getSelectionEnd());
+        }
+    }
+
+    private void underlineValid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        getEditableText().setSpan(new UnderlineSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void underlineInvalid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        UnderlineSpan[] spans = getEditableText().getSpans(start, end, UnderlineSpan.class);
+        List<Part> list = new ArrayList<>();
+
+        for (UnderlineSpan span : spans) {
+            list.add(new Part(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            getEditableText().removeSpan(span);
+        }
+
+        for (Part part : list) {
+            if (part.isValid()) {
+                if (part.getStart() < start) {
+                    underlineValid(part.getStart(), start);
+                }
+
+                if (part.getEnd() > end) {
+                    underlineValid(end, part.getEnd());
+                }
+            }
+        }
+    }
+
+    private boolean containUnderline(int start, int end) {
+        if (start > end) {
+            return false;
+        }
+
+        if (start == end) {
+            if (start - 1 < 0 || start + 1 > getEditableText().length()) {
+                return false;
+            } else {
+                UnderlineSpan[] before = getEditableText().getSpans(start - 1, start, UnderlineSpan.class);
+                UnderlineSpan[] after = getEditableText().getSpans(start, start + 1, UnderlineSpan.class);
+                return before.length > 0 && after.length > 0;
+            }
+        } else {
+            StringBuilder builder = new StringBuilder();
+
+            // Make sure no duplicate characters be added
+            for (int i = start; i < end; i++) {
+                if (getEditableText().getSpans(i, i + 1, UnderlineSpan.class).length > 0) {
+                    builder.append(getEditableText().subSequence(i, i + 1).toString());
                 }
             }
 

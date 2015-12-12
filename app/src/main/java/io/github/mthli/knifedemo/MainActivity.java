@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
         knife = (KnifeText) findViewById(R.id.knife);
         setupBold();
         setupItalic();
-        setupUnderlined();
+        setupUnderline();
         setupStrikethrough();
         setupListBulleted();
         setupListNumbered();
@@ -67,20 +67,20 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void setupUnderlined() {
-        ImageButton underlined = (ImageButton) findViewById(R.id.underlined);
+    private void setupUnderline() {
+        ImageButton underline = (ImageButton) findViewById(R.id.underline);
 
-        underlined.setOnClickListener(new View.OnClickListener() {
+        underline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                knife.underline(!knife.contains(KnifeText.FORMAT_UNDERLINED));
             }
         });
 
-        underlined.setOnLongClickListener(new View.OnLongClickListener() {
+        underline.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_underlined, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.toast_underline, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

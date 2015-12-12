@@ -13,7 +13,7 @@
     <!-- Toast -->
     <string name="toast_bold">Bold</string>
     <string name="toast_italic">Italic</string>
-    <string name="toast_underlined">Underlined</string>
+    <string name="toast_underline">Underline</string>
     <string name="toast_strikethrough">Strikethrough</string>
     <string name="toast_list_bulleted">List bulleted</string>
     <string name="toast_list_numbered">List numbered</string>
