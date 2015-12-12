@@ -12,6 +12,7 @@ import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -631,6 +632,11 @@ public class KnifeText extends EditText {
 
     // URLSpan =====================================================================================
 
+    public void link(String link) {
+        link(link, getSelectionStart(), getSelectionEnd());
+    }
+
+    // When KnifeText lose focus, use this method
     public void link(String link, int start, int end) {
         if (link != null && !TextUtils.isEmpty(link.trim())) {
             linkValid(link, start, end);
@@ -688,10 +694,22 @@ public class KnifeText extends EditText {
 
     // ImageSpan ===================================================================================
 
-    // Clear =======================================================================================
+    // Helper ======================================================================================
 
-    public void clear() {
+    public void clearFormats() {
         setText(getEditableText().toString());
         setSelection(getEditableText().length());
+    }
+
+    public void hideSoftInput() {
+        clearFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindowToken(), 0);
+    }
+
+    public void showSoftInput() {
+        requestFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 }

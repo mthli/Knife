@@ -173,19 +173,20 @@ public class MainActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
 
-        final View view = getLayoutInflater().inflate(R.layout.dialog_link, null, false);
+        View view = getLayoutInflater().inflate(R.layout.dialog_link, null, false);
+        final EditText editText = (EditText) view.findViewById(R.id.edit);
         builder.setView(view);
         builder.setTitle(R.string.dialog_title);
 
         builder.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                EditText editText = (EditText) view.findViewById(R.id.edit);
                 String link = editText.getText().toString().trim();
                 if (TextUtils.isEmpty(link)) {
                     return;
                 }
 
+                // When KnifeText lose focus, use this method
                 knife.link(link, start, end);
             }
         });
@@ -212,7 +213,7 @@ public class MainActivity extends Activity {
             case R.id.insert_photo:
                 break;
             case R.id.format_clear:
-                knife.clear();
+                knife.clearFormats();
                 break;
             case R.id.inport:
                 break;
