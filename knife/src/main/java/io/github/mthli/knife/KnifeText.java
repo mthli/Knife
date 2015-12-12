@@ -9,6 +9,7 @@ import android.text.style.BulletSpan;
 import android.text.style.QuoteSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
+import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -28,8 +29,12 @@ public class KnifeText extends EditText {
 
     private int bulletColor = -1;
     private int bulletGapWidth = -1;
+    private int linkColor = -1;
+    private boolean linkUnderline = true;
     private int quoteColor = -1;
     private int quoteGapWidth = -1;
+    private int strikethroughColor = -1;
+    private int underlineColor = -1;
 
     public KnifeText(Context context) {
         super(context);
@@ -56,8 +61,12 @@ public class KnifeText extends EditText {
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, -1);
         bulletGapWidth = array.getInt(R.styleable.KnifeText_bulletGapWidth, -1);
+        linkColor = array.getColor(R.styleable.KnifeText_linkColor, -1);
+        linkUnderline = array.getBoolean(R.styleable.KnifeText_linkUnderline, true);
         quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, -1);
         quoteGapWidth = array.getInt(R.styleable.KnifeText_quoteCapWidth, -1);
+        strikethroughColor = array.getColor(R.styleable.KnifeText_strikethroughColor, -1);
+        underlineColor = array.getColor(R.styleable.KnifeText_underlineColor, -1);
         array.recycle();
     }
 
@@ -78,16 +87,12 @@ public class KnifeText extends EditText {
             case FORMAT_QUOTE:
                 return containQuote();
             case FORMAT_LINK:
-                return containLink();
+                return containLink(getSelectionStart(), getSelectionEnd());
             case FORMAT_IMAGE:
                 return containImage();
             default:
                 return false;
         }
-    }
-
-    private boolean containLink() {
-        return false;
     }
 
     private boolean containImage() {
@@ -390,8 +395,7 @@ public class KnifeText extends EditText {
                 bulletEnd = lineEnd;
             }
 
-            // Allow space currently
-            if (bulletStart < bulletEnd /* && !TextUtils.isEmpty(getEditableText().subSequence(bulletStart, bulletEnd).toString().trim()) */ ) {
+            if (bulletStart < bulletEnd) {
                 if (bulletColor >= 0 && bulletGapWidth >= 0) {
                     getEditableText().setSpan(new BulletSpan(bulletColor, bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else if (bulletGapWidth >= 0) {
@@ -629,11 +633,42 @@ public class KnifeText extends EditText {
 
     // URLSpan =====================================================================================
 
-    public void link(String url) {
-        if (url != null && !TextUtils.isEmpty(url.trim())) {
-
+    public void link(String link) {
+        if (link != null && !TextUtils.isEmpty(link.trim())) {
+            linkValid(link, getSelectionStart(), getSelectionEnd());
         } else {
-
+            linkInvalid(getSelectionStart(), getSelectionEnd());
         }
+    }
+
+    private void linkValid(String link, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        linkInvalid(start, end);
+        getEditableText().setSpan(new URLSpan(link), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    // Remove all span in selection, not like the boldInvalid()
+    private void linkInvalid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        URLSpan[] spans = getEditableText().getSpans(start, end, URLSpan.class);
+        for (URLSpan span : spans) {
+            getEditableText().removeSpan(span);
+        }
+    }
+
+    private boolean containLink(int start, int end) {
+        if (start > end) {
+            return false;
+        }
+
+        // TODO
+
+        return false;
     }
 }

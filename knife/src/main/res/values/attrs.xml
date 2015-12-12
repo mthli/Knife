@@ -5,8 +5,12 @@
     <declare-styleable name="KnifeText">
         <attr name="bulletColor" format="reference|color" />
         <attr name="bulletGapWidth" format="reference|integer" />
+        <attr name="linkColor" format="reference|color" />
+        <attr name="linkUnderline" format="reference|boolean" />
         <attr name="quoteColor" format="reference|color" />
         <attr name="quoteCapWidth" format="reference|integer" />
+        <attr name="strikethroughColor" format="reference|color" />
+        <attr name="underlineColor" format="reference|color" />
     </declare-styleable>
 
 </resources>
