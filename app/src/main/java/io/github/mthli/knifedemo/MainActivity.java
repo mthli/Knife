@@ -2,7 +2,6 @@ package io.github.mthli.knifedemo;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,7 +54,7 @@ public class MainActivity extends Activity {
         italic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                knife.italic(!knife.contains(KnifeText.FORMAT_ITALIC));
             }
         });
 
