@@ -19,70 +19,24 @@ public class KnifeText extends EditText {
     public static final int FORMAT_LINK = 0x08;
     public static final int FORMAT_IMAGE = 0x09;
 
-    public static final int CONTAINS_ALGORITHM_AND = 0;
-    public static final int CONTAINS_ALGORITHM_OR = 1;
-
-    private int containsAlgorithm = CONTAINS_ALGORITHM_OR;
-    private int spannedFlags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-
     public KnifeText(Context context) {
         super(context);
-        init(null);
     }
 
     public KnifeText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
     }
 
     public KnifeText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
     }
 
     @SuppressWarnings("NewApi")
     public KnifeText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(attrs);
     }
 
-    private void init(AttributeSet attrs) {
-        // TODO
-    }
-
-    public void setContainsAlgorithm(int flags) {
-        if (flags == CONTAINS_ALGORITHM_AND) {
-            this.containsAlgorithm = CONTAINS_ALGORITHM_AND;
-        } else if (flags == CONTAINS_ALGORITHM_OR) {
-            this.containsAlgorithm = CONTAINS_ALGORITHM_OR;
-        } else {
-            throw new IllegalArgumentException("flags must be KnifeText.CONTAINS_ALGORITHM_AND or KnifeText.CONTAINS_ALGORITHM_OR");
-        }
-    }
-
-    public void setSpannedFlags(int flags) {
-        if (flags == Spanned.SPAN_INCLUSIVE_EXCLUSIVE) {
-            this.spannedFlags = Spanned.SPAN_INCLUSIVE_EXCLUSIVE;
-        } else if (flags == Spanned.SPAN_INCLUSIVE_INCLUSIVE) {
-            this.spannedFlags = Spanned.SPAN_INCLUSIVE_INCLUSIVE;
-        } else if (flags == Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) {
-            this.spannedFlags = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-        } else if (flags == Spanned.SPAN_EXCLUSIVE_INCLUSIVE) {
-            this.spannedFlags = Spanned.SPAN_EXCLUSIVE_INCLUSIVE;
-        } else {
-            throw new IllegalArgumentException(
-                    "flags must be one of Spanned.SPAN_INCLUSIVE_EXCLUSIVE, "
-                            + "Spanned.SPAN_INCLUSIVE_INCLUSIVE, "
-                            + "Spanned.SPAN_EXCLUSIVE_EXCLUSIVE, "
-                            + "Spanned.SPAN_EXCLUSIVE_INCLUSIVE"
-            );
-        }
-
-        // TODO change all span
-    }
-
-    public boolean contains(int format)
-    {
+    public boolean contains(int format) {
         switch (format) {
             case FORMAT_BOLD:
                 return containBold();
@@ -107,7 +61,6 @@ public class KnifeText extends EditText {
         }
     }
 
-    // TODO
     private boolean containBold() {
         int start = getSelectionStart();
         int end = getSelectionEnd();

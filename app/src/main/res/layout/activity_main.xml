@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -104,9 +103,7 @@
             android:layout_marginEnd="16dp"
             android:gravity="top|start"
             android:scrollbars="vertical"
-            android:background="@android:color/transparent"
-            app:containsAlgorithm="AND"
-            app:spannedFlags="EXCLUSIVE_EXCLUSIVE">
+            android:background="@android:color/transparent">
     </io.github.mthli.knife.KnifeText>
 
 </RelativeLayout>
