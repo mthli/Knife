@@ -1,10 +1,10 @@
 package io.github.mthli.knife;
 
-public class Part {
+public class KnifePart {
     private int start;
     private int end;
 
-    public Part(int start, int end) {
+    public KnifePart(int start, int end) {
         this.start = start;
         this.end = end;
     }

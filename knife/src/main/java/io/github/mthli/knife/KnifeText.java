@@ -152,16 +152,16 @@ public class KnifeText extends EditText {
         }
 
         StyleSpan[] spans = getEditableText().getSpans(start, end, StyleSpan.class);
-        List<Part> list = new ArrayList<>();
+        List<KnifePart> list = new ArrayList<>();
 
         for (StyleSpan span : spans) {
             if (span.getStyle() == style) {
-                list.add(new Part(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+                list.add(new KnifePart(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
                 getEditableText().removeSpan(span);
             }
         }
 
-        for (Part part : list) {
+        for (KnifePart part : list) {
             if (part.isValid()) {
                 if (part.getStart() < start) {
                     styleValid(style, part.getStart(), start);
@@ -239,14 +239,14 @@ public class KnifeText extends EditText {
         }
 
         UnderlineSpan[] spans = getEditableText().getSpans(start, end, UnderlineSpan.class);
-        List<Part> list = new ArrayList<>();
+        List<KnifePart> list = new ArrayList<>();
 
         for (UnderlineSpan span : spans) {
-            list.add(new Part(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            list.add(new KnifePart(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
             getEditableText().removeSpan(span);
         }
 
-        for (Part part : list) {
+        for (KnifePart part : list) {
             if (part.isValid()) {
                 if (part.getStart() < start) {
                     underlineValid(part.getStart(), start);
@@ -309,14 +309,14 @@ public class KnifeText extends EditText {
         }
 
         StrikethroughSpan[] spans = getEditableText().getSpans(start, end, StrikethroughSpan.class);
-        List<Part> list = new ArrayList<>();
+        List<KnifePart> list = new ArrayList<>();
 
         for (StrikethroughSpan span : spans) {
-            list.add(new Part(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            list.add(new KnifePart(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
             getEditableText().removeSpan(span);
         }
 
-        for (Part part : list) {
+        for (KnifePart part : list) {
             if (part.isValid()) {
                 if (part.getStart() < start) {
                     strikethroughValid(part.getStart(), start);
@@ -693,6 +693,8 @@ public class KnifeText extends EditText {
     }
 
     // ImageSpan ===================================================================================
+
+    // TODO
 
     // Helper ======================================================================================
 
