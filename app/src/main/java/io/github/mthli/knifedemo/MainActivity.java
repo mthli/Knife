@@ -1,10 +1,14 @@
 package io.github.mthli.knifedemo;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -149,7 +153,7 @@ public class MainActivity extends Activity {
         link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showLinkDialog();
             }
         });
 
@@ -160,6 +164,40 @@ public class MainActivity extends Activity {
                 return true;
             }
         });
+    }
+
+    private void showLinkDialog() {
+        final int start = knife.getSelectionStart();
+        final int end = knife.getSelectionEnd();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+
+        final View view = getLayoutInflater().inflate(R.layout.dialog_link, null, false);
+        builder.setView(view);
+        builder.setTitle(R.string.dialog_title);
+
+        builder.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                EditText editText = (EditText) view.findViewById(R.id.edit);
+                String link = editText.getText().toString().trim();
+                if (TextUtils.isEmpty(link)) {
+                    return;
+                }
+
+                knife.link(link, start, end);
+            }
+        });
+
+        builder.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // DO NOTHING HERE
+            }
+        });
+
+        builder.create().show();
     }
 
     @Override

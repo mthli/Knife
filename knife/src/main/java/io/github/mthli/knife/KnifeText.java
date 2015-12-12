@@ -117,7 +117,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private void styleValid(int style, int start, int end) {
+    protected void styleValid(int style, int start, int end) {
         switch (style) {
             case Typeface.NORMAL:
             case Typeface.BOLD:
@@ -135,7 +135,7 @@ public class KnifeText extends EditText {
         getEditableText().setSpan(new StyleSpan(style), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    private void styleInvalid(int style, int start, int end) {
+    protected void styleInvalid(int style, int start, int end) {
         switch (style) {
             case Typeface.NORMAL:
             case Typeface.BOLD:
@@ -173,7 +173,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private boolean containStyle(int style, int start, int end) {
+    protected boolean containStyle(int style, int start, int end) {
         switch (style) {
             case Typeface.NORMAL:
             case Typeface.BOLD:
@@ -224,7 +224,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private void underlineValid(int start, int end) {
+    protected void underlineValid(int start, int end) {
         if (start >= end) {
             return;
         }
@@ -232,7 +232,7 @@ public class KnifeText extends EditText {
         getEditableText().setSpan(new UnderlineSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    private void underlineInvalid(int start, int end) {
+    protected void underlineInvalid(int start, int end) {
         if (start >= end) {
             return;
         }
@@ -258,7 +258,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private boolean containUnderline(int start, int end) {
+    protected boolean containUnderline(int start, int end) {
         if (start > end) {
             return false;
         }
@@ -294,7 +294,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private void strikethroughValid(int start, int end) {
+    protected void strikethroughValid(int start, int end) {
         if (start >= end) {
             return;
         }
@@ -302,7 +302,7 @@ public class KnifeText extends EditText {
         getEditableText().setSpan(new StrikethroughSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    private void strikethroughInvalid(int start, int end) {
+    protected void strikethroughInvalid(int start, int end) {
         if (start >= end) {
             return;
         }
@@ -328,7 +328,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private boolean containStrikethrough(int start, int end) {
+    protected boolean containStrikethrough(int start, int end) {
         if (start > end) {
             return false;
         }
@@ -364,7 +364,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private void bulletValid() {
+    protected void bulletValid() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
 
         for (int i = 0; i < lines.length; i++) {
@@ -405,7 +405,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private void bulletInvalid() {
+    protected void bulletInvalid() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
 
         for (int i = 0; i < lines.length; i++) {
@@ -442,7 +442,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private boolean containBullet() {
+    protected boolean containBullet() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
         List<Integer> list = new ArrayList<>();
 
@@ -473,7 +473,7 @@ public class KnifeText extends EditText {
         return true;
     }
 
-    private boolean containBullet(int index) {
+    protected boolean containBullet(int index) {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
         if (index < 0 || index >= lines.length) {
             return false;
@@ -503,7 +503,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private void quoteValid() {
+    protected void quoteValid() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
 
         for (int i = 0; i < lines.length; i++) {
@@ -541,7 +541,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private void quoteInvalid() {
+    protected void quoteInvalid() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
 
         for (int i = 0; i < lines.length; i++) {
@@ -578,7 +578,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    private boolean containQuote() {
+    protected boolean containQuote() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
         List<Integer> list = new ArrayList<>();
 
@@ -609,7 +609,7 @@ public class KnifeText extends EditText {
         return true;
     }
 
-    private boolean containQuote(int index) {
+    protected boolean containQuote(int index) {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
         if (index < 0 || index >= lines.length) {
             return false;
@@ -631,15 +631,15 @@ public class KnifeText extends EditText {
 
     // URLSpan =====================================================================================
 
-    public void link(String link) {
+    public void link(String link, int start, int end) {
         if (link != null && !TextUtils.isEmpty(link.trim())) {
-            linkValid(link, getSelectionStart(), getSelectionEnd());
+            linkValid(link, start, end);
         } else {
-            linkInvalid(getSelectionStart(), getSelectionEnd());
+            linkInvalid(start, end);
         }
     }
 
-    private void linkValid(String link, int start, int end) {
+    protected void linkValid(String link, int start, int end) {
         if (start >= end) {
             return;
         }
@@ -649,7 +649,7 @@ public class KnifeText extends EditText {
     }
 
     // Remove all span in selection, not like the boldInvalid()
-    private void linkInvalid(int start, int end) {
+    protected void linkInvalid(int start, int end) {
         if (start >= end) {
             return;
         }
@@ -660,8 +660,7 @@ public class KnifeText extends EditText {
         }
     }
 
-    // TODO
-    private boolean containLink(int start, int end) {
+    protected boolean containLink(int start, int end) {
         if (start > end) {
             return false;
         }
