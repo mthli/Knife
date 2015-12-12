@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.BulletSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
@@ -360,17 +361,26 @@ public class KnifeText extends EditText {
     }
 
     private void bulletValid() {
-        for (int i = 0; i < getLayout().getLineCount(); i++) {
+        String[] lines = TextUtils.split(getEditableText().toString(), "\n");
+
+        for (int i = 0; i < lines.length; i++) {
             if (containBullet(i)) {
                 continue;
             }
 
-            int lineStart = getLayout().getLineStart(i);
-            int lineEnd = getLayout().getLineEnd(i);
-            int bulletStart = 0;
-            int bulletEnd = 0;
+            int lineStart = 0;
+            for (int j = 0; j < i; j++) {
+                lineStart = lineStart + lines[j].length() + 1; // \n
+            }
+
+            int lineEnd = lineStart + lines[i].length();
+            if (lineStart >= lineEnd) {
+                continue;
+            }
 
             // Find selection area inside
+            int bulletStart = 0;
+            int bulletEnd = 0;
             if (lineStart <= getSelectionStart() && getSelectionEnd() <= lineEnd) {
                 bulletStart = lineStart;
                 bulletEnd = lineEnd;
@@ -379,7 +389,8 @@ public class KnifeText extends EditText {
                 bulletEnd = lineEnd;
             }
 
-            if (bulletStart < bulletEnd) {
+            // Allow space currently
+            if (bulletStart < bulletEnd /* && !TextUtils.isEmpty(getEditableText().subSequence(bulletStart, bulletEnd).toString().trim()) */ ) {
                 if (bulletColor >= 0 && bulletGapWidth >= 0) {
                     getEditableText().setSpan(new BulletSpan(bulletColor, bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else if (bulletGapWidth >= 0) {
@@ -392,17 +403,25 @@ public class KnifeText extends EditText {
     }
 
     private void bulletInvalid() {
-        for (int i = 0; i < getLayout().getLineCount(); i++) {
+        String[] lines = TextUtils.split(getEditableText().toString(), "\n");
+
+        for (int i = 0; i < lines.length; i++) {
             if (!containBullet(i)) {
                 continue;
             }
 
-            int lineStart = getLayout().getLineStart(i);
-            int lineEnd = getLayout().getLineEnd(i);
+            int lineStart = 0;
+            for (int j = 0; j < i; j++) {
+                lineStart = lineStart + lines[j].length() + 1;
+            }
+
+            int lineEnd = lineStart + lines[i].length();
+            if (lineStart >= lineEnd) {
+                continue;
+            }
+
             int bulletStart = 0;
             int bulletEnd = 0;
-
-            // Find selection area inside
             if (lineStart <= getSelectionStart() && getSelectionEnd() <= lineEnd) {
                 bulletStart = lineStart;
                 bulletEnd = lineEnd;
@@ -421,13 +440,20 @@ public class KnifeText extends EditText {
     }
 
     private boolean containBullet() {
+        String[] lines = TextUtils.split(getEditableText().toString(), "\n");
         List<Integer> list = new ArrayList<>();
 
-        for (int i = 0; i < getLayout().getLineCount(); i++) {
-            int lineStart = getLayout().getLineStart(i);
-            int lineEnd = getLayout().getLineEnd(i);
+        for (int i = 0; i < lines.length; i++) {
+            int lineStart = 0;
+            for (int j = 0; j < i; j++) {
+                lineStart = lineStart + lines[j].length() + 1;
+            }
 
-            // Find selection area inside
+            int lineEnd = lineStart + lines[i].length();
+            if (lineStart >= lineEnd) {
+                continue;
+            }
+
             if (lineStart <= getSelectionStart() && getSelectionEnd() <= lineEnd) {
                 list.add(i);
             } else if (getSelectionStart() <= lineStart && lineEnd <= getSelectionEnd()) {
@@ -444,15 +470,23 @@ public class KnifeText extends EditText {
         return true;
     }
 
-    private boolean containBullet(int line) {
-        if (line < 0 || line >= getLayout().getLineCount()) {
+    private boolean containBullet(int index) {
+        String[] lines = TextUtils.split(getEditableText().toString(), "\n");
+        if (index < 0 || index >= lines.length) {
             return false;
         }
 
-        int start = getLayout().getLineStart(line);
-        int end = getLayout().getLineEnd(line);
-        BulletSpan[] spans = getEditableText().getSpans(start, end, BulletSpan.class);
+        int start = 0;
+        for (int i = 0; i < index; i++) {
+            start = start + lines[i].length() + 1;
+        }
 
+        int end = start + lines[index].length();
+        if (start >= end) {
+            return false;
+        }
+
+        BulletSpan[] spans = getEditableText().getSpans(start, end, BulletSpan.class);
         return spans.length > 0;
     }
 
