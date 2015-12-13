@@ -3,8 +3,10 @@ package io.github.mthli.knife;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.text.style.QuoteSpan;
 import android.text.style.StrikethroughSpan;
@@ -18,7 +20,7 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KnifeText extends EditText {
+public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BOLD = 0x01;
     public static final int FORMAT_ITALIC = 0x02;
     public static final int FORMAT_UNDERLINED = 0x03;
@@ -30,6 +32,7 @@ public class KnifeText extends EditText {
 
     private int bulletColor = -1;
     private int bulletGapWidth = -1;
+    private int historyStack = 10;
     private int linkColor = -1;
     private boolean linkUnderline = true;
     private int quoteColor = -1;
@@ -62,6 +65,7 @@ public class KnifeText extends EditText {
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, -1);
         bulletGapWidth = array.getInt(R.styleable.KnifeText_bulletGapWidth, -1);
+        historyStack = array.getInt(R.styleable.KnifeText_historyStack, 10);
         linkColor = array.getColor(R.styleable.KnifeText_linkColor, -1);
         linkUnderline = array.getBoolean(R.styleable.KnifeText_linkUnderline, true);
         quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, -1);
@@ -69,6 +73,8 @@ public class KnifeText extends EditText {
         strikethroughColor = array.getColor(R.styleable.KnifeText_strikethroughColor, -1);
         underlineColor = array.getColor(R.styleable.KnifeText_underlineColor, -1);
         array.recycle();
+
+        addTextChangedListener(this);
     }
 
     // Contains ====================================================================================
@@ -695,6 +701,43 @@ public class KnifeText extends EditText {
     // ImageSpan ===================================================================================
 
     // TODO
+
+    // Redo/Undo ===================================================================================
+
+    public void redo() {
+
+    }
+
+    public boolean redoValid() {
+        return false;
+    }
+
+    public void undo() {
+
+    }
+
+    public boolean undoValid() {
+        return false;
+    }
+
+    public void clearHistory() {
+
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence text, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence text, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable text) {
+
+    }
 
     // Helper ======================================================================================
 
