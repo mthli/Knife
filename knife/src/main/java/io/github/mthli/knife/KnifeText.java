@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -41,11 +42,12 @@ public class KnifeText extends EditText implements TextWatcher {
     private int strikethroughColor = -1;
     private int underlineColor = -1;
 
-    private List<KnifeHistory> redoList = new LinkedList<>();
-    private List<KnifeHistory> undoList = new LinkedList<>();
+    private List<Editable> historyList = new LinkedList<>();
     private boolean historyWorking = false;
-    private int redoCursor = 0;
-    private int undoCursor = 0;
+    private int historyCursor = 0;
+
+    private SpannableStringBuilder inputBefore;
+    private Editable inputLast;
 
     public KnifeText(Context context) {
         super(context);
@@ -73,7 +75,7 @@ public class KnifeText extends EditText implements TextWatcher {
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, -1);
         bulletGapWidth = array.getInt(R.styleable.KnifeText_bulletGapWidth, -1);
         historyEnable = array.getBoolean(R.styleable.KnifeText_historyEnable, true);
-        historySize = array.getInt(R.styleable.KnifeText_historySize, 10);
+        historySize = array.getInt(R.styleable.KnifeText_historySize, 100);
         linkColor = array.getColor(R.styleable.KnifeText_linkColor, -1);
         linkUnderline = array.getBoolean(R.styleable.KnifeText_linkUnderline, true);
         quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, -1);
@@ -85,8 +87,19 @@ public class KnifeText extends EditText implements TextWatcher {
         if (historyEnable && historySize <= 0) {
             throw new IllegalArgumentException("historySize size must > 0");
         }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
 
         addTextChangedListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeTextChangedListener(this);
     }
 
     // Contains ====================================================================================
@@ -712,35 +725,31 @@ public class KnifeText extends EditText implements TextWatcher {
             return;
         }
 
-        if (undoList.size() < historySize) {
-            undoList.add(new KnifeHistory(text, start, count, after));
-        } else {
-            undoList.remove(0);
-            undoList.add(new KnifeHistory(text, start, count, after));
-        }
-
-        undoCursor = undoList.size() - 1;
+        inputBefore = new SpannableStringBuilder(text);
     }
 
     @Override
     public void onTextChanged(CharSequence text, int start, int before, int count) {
-        if (!historyEnable || historyWorking) {
-            return;
-        }
-
-        if (redoList.size() < historySize) {
-            redoList.add(new KnifeHistory(text, start, count, before));
-        } else {
-            redoList.remove(0);
-            redoList.add(new KnifeHistory(text, start, count, before));
-        }
-
-        redoCursor = redoList.size() - 1;
+        // DO NOTHING HERE
     }
 
     @Override
     public void afterTextChanged(Editable text) {
-        // DO NOTHING HERE
+        if (!historyEnable || historyWorking) {
+            return;
+        }
+
+        inputLast = new SpannableStringBuilder(text);
+        if (text != null && text.toString().equals(inputBefore.toString())) {
+            return;
+        }
+
+        if (historyList.size() >= historySize) {
+            historyList.remove(0);
+        }
+
+        historyList.add(inputBefore);
+        historyCursor = historyList.size();
     }
 
     public void redo() {
@@ -748,7 +757,18 @@ public class KnifeText extends EditText implements TextWatcher {
             return;
         }
 
-        // TODO
+        historyWorking = true;
+
+        if (historyCursor >= historyList.size() - 1) {
+            historyCursor = historyList.size();
+            setText(inputLast);
+        } else {
+            historyCursor++;
+            setText(historyList.get(historyCursor));
+        }
+
+        setSelection(getEditableText().length());
+        historyWorking = false;
     }
 
     public void undo() {
@@ -756,27 +776,29 @@ public class KnifeText extends EditText implements TextWatcher {
             return;
         }
 
-        // TODO
+        historyWorking = true;
+
+        historyCursor--;
+        setText(historyList.get(historyCursor));
+        setSelection(getEditableText().length());
+
+        historyWorking = false;
     }
 
     public boolean redoValid() {
-        if (!historyEnable || historyWorking) {
+        if (!historyEnable || historySize <= 0 || historyList.size() <= 0 || historyWorking) {
             return false;
         }
 
-        if (redoList.size() <= 0 || redoCursor >= redoList.size() - 1) {
-            return false;
-        }
-
-        return true;
+        return historyCursor < historyList.size() - 1 || historyCursor >= historyList.size() - 1 && inputLast != null;
     }
 
     public boolean undoValid() {
-        if (!historyEnable || historyWorking) {
+        if (!historyEnable || historySize <= 0 || historyWorking) {
             return false;
         }
 
-        if (undoList.size() <= 0 || undoCursor <= 0) {
+        if (historyList.size() <= 0 || historyCursor <= 0) {
             return false;
         }
 
@@ -784,12 +806,8 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     public void clearHistory() {
-        if (redoList != null) {
-            redoList.clear();
-        }
-
-        if (undoList != null) {
-            undoList.clear();
+        if (historyList != null) {
+            historyList.clear();
         }
     }
 

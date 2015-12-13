@@ -231,8 +231,10 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.undo:
+                knife.undo();
                 break;
             case R.id.redo:
+                knife.redo();
                 break;
             case R.id.inport:
                 break;
