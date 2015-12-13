@@ -15,15 +15,15 @@ public class KnifeQuoteSpan extends QuoteSpan {
     private int quoteGapWidth = DEFAULT_GAP_WIDTH;
 
     public KnifeQuoteSpan(int quoteColor, int quoteStripeWidth, int quoteGapWidth) {
-        if (quoteColor >= 0) {
+        if (quoteColor != 0) {
             this.quoteColor = quoteColor;
         }
 
-        if (quoteStripeWidth >= 0) {
+        if (quoteStripeWidth != 0) {
             this.quoteStripeWidth = quoteStripeWidth;
         }
 
-        if (quoteGapWidth >= 0) {
+        if (quoteGapWidth != 0) {
             this.quoteGapWidth = quoteGapWidth;
         }
     }

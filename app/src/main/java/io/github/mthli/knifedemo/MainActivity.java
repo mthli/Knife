@@ -236,9 +236,7 @@ public class MainActivity extends Activity {
             case R.id.redo:
                 knife.redo();
                 break;
-            case R.id.inport:
-                break;
-            case R.id.export:
+            case R.id.github:
                 break;
             default:
                 break;

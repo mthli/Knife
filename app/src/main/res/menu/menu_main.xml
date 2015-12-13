@@ -14,14 +14,8 @@
           android:showAsAction="ifRoom">
     </item>
 
-    <!-- Resource name can not be a Java keyword (import) -->
-    <item android:id="@+id/inport"
-          android:title="@string/menu_import"
-          android:showAsAction="collapseActionView">
-    </item>
-
-    <item android:id="@+id/export"
-          android:title="@string/menu_export"
+    <item android:id="@+id/github"
+          android:title="@string/menu_github"
           android:showAsAction="collapseActionView">
     </item>
 

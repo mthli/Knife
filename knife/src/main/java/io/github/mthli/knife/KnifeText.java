@@ -2,9 +2,9 @@ package io.github.mthli.knife;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Editable;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -16,6 +16,7 @@ import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -32,15 +33,15 @@ public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_QUOTE = 0x06;
     public static final int FORMAT_LINK = 0x07;
 
-    private int bulletColor = -1;
-    private int bulletGapWidth = -1;
+    private int bulletColor = 0;
+    private int bulletGapWidth = 0;
     private boolean historyEnable = true;
-    private int historySize = 10;
-    private int linkColor = -1;
+    private int historySize = 100;
+    private int linkColor = 0;
     private boolean linkUnderline = true;
-    private int quoteColor = -1;
-    private int quoteStripeWidth = -1;
-    private int quoteGapWidth = -1;
+    private int quoteColor = 0;
+    private int quoteStripeWidth = 0;
+    private int quoteGapWidth = 0;
 
     private List<Editable> historyList = new LinkedList<>();
     private boolean historyWorking = false;
@@ -72,16 +73,27 @@ public class KnifeText extends EditText implements TextWatcher {
 
     private void init(AttributeSet attrs) {
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
-        bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, -1);
-        bulletGapWidth = array.getInt(R.styleable.KnifeText_bulletGapWidth, -1);
+        bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, 0);
+        bulletGapWidth = array.getDimensionPixelSize(R.styleable.KnifeText_bulletGapWidth, 0);
         historyEnable = array.getBoolean(R.styleable.KnifeText_historyEnable, true);
         historySize = array.getInt(R.styleable.KnifeText_historySize, 100);
-        linkColor = array.getColor(R.styleable.KnifeText_linkColor, -1);
+        linkColor = array.getColor(R.styleable.KnifeText_linkColor, 0);
         linkUnderline = array.getBoolean(R.styleable.KnifeText_linkUnderline, true);
-        quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, -1);
-        quoteStripeWidth = array.getColor(R.styleable.KnifeText_quoteStripeWidth, -1);
-        quoteGapWidth = array.getInt(R.styleable.KnifeText_quoteCapWidth, -1);
+        quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, 0);
+        quoteStripeWidth = array.getDimensionPixelSize(R.styleable.KnifeText_quoteStripeWidth, 0);
+        quoteGapWidth = array.getDimensionPixelSize(R.styleable.KnifeText_quoteCapWidth, 0);
         array.recycle();
+
+        Log.e("bulletColor", String.valueOf(bulletColor));
+        Log.e("bulletGapWidth", String.valueOf(bulletGapWidth));
+        Log.e("historyEnable", String.valueOf(historyEnable));
+        Log.e("historySize", String.valueOf(historySize));
+        Log.e("linkColor", String.valueOf(linkColor));
+        Log.e("linkUnderline", String.valueOf(linkUnderline));
+        Log.e("quoteColor", String.valueOf(quoteColor));
+        Log.e("quoteStripeWidth", String.valueOf(quoteStripeWidth));
+        Log.e("quoteGapWidth", String.valueOf(quoteGapWidth));
+        Log.e("parseColor", String.valueOf(Color.parseColor("#FF2196F3")));
 
         if (historyEnable && historySize <= 0) {
             throw new IllegalArgumentException("historySize size must > 0");
@@ -366,7 +378,6 @@ public class KnifeText extends EditText implements TextWatcher {
         }
     }
 
-    // TODO
     protected void bulletValid() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
 
@@ -397,9 +408,9 @@ public class KnifeText extends EditText implements TextWatcher {
             }
 
             if (bulletStart < bulletEnd) {
-                if (bulletColor >= 0 && bulletGapWidth >= 0) {
+                if (bulletColor != 0 && bulletGapWidth != 0) {
                     getEditableText().setSpan(new BulletSpan(bulletColor, bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else if (bulletGapWidth >= 0) {
+                } else if (bulletGapWidth != 0) {
                     getEditableText().setSpan(new BulletSpan(bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else {
                     getEditableText().setSpan(new BulletSpan(), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -820,9 +831,9 @@ public class KnifeText extends EditText implements TextWatcher {
             int end = getEditableText().getSpanEnd(span);
             getEditableText().removeSpan(span);
 
-            if (bulletColor >= 0 && bulletGapWidth >= 0) {
+            if (bulletColor != 0 && bulletGapWidth != 0) {
                 getEditableText().setSpan(new BulletSpan(bulletColor, bulletGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            } else if (bulletGapWidth >= 0) {
+            } else if (bulletGapWidth != 0) {
                 getEditableText().setSpan(new BulletSpan(bulletGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
                 getEditableText().setSpan(new BulletSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -6,8 +6,7 @@
     <!-- Menu -->
     <string name="menu_undo">Undo</string>
     <string name="menu_redo">Redo</string>
-    <string name="menu_import">Import</string>
-    <string name="menu_export">Export</string>
+    <string name="menu_github">GitHub</string>
 
     <!-- Dialog -->
     <string name="dialog_title">Insert link</string>

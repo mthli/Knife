@@ -5,7 +5,7 @@ import android.text.TextPaint;
 import android.text.style.URLSpan;
 
 public class KnifeURLSpan extends URLSpan {
-    private int linkColor = -1;
+    private int linkColor = 0;
     private boolean linkUnderline = true;
 
     public KnifeURLSpan(String url, int linkColor, boolean linkUnderline) {
@@ -22,7 +22,7 @@ public class KnifeURLSpan extends URLSpan {
 
     @Override
     public void updateDrawState(TextPaint ds) {
-        if (linkColor < 0) {
+        if (linkColor != 0) {
             ds.setColor(ds.linkColor);
         } else {
             ds.setColor(linkColor);
