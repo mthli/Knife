@@ -3,8 +3,12 @@ package io.github.mthli.knifedemo;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +19,15 @@ import android.widget.Toast;
 import io.github.mthli.knife.KnifeText;
 
 public class MainActivity extends Activity {
+    private static final String BOLD = "<p><b>Bold</b></p>";
+    private static final String ITALIT = "<p><i>Italic</i></p>";
+    private static final String UNDERLINE = "<p><u>Underline</u></p>";
+    private static final String STRIKETHROUGH = "<p><s>Strikethrough</s></p>"; // <s> or <strike> or <del>
+    private static final String BULLET = "<p><ul><li>Bullet</li></ul></p>";
+    private static final String QUOTE = "<p><blockquote>Quote</blockquote></p>";
+    private static final String LINK = "<p><a href=\"https://github.com/mthli/Knife\">Link</a></p>";
+    private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK;
+
     private KnifeText knife;
 
     @Override
@@ -23,6 +36,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         knife = (KnifeText) findViewById(R.id.knife);
+        knife.setText(Html.fromHtml(EXAMPLE));
+        knife.swicthToKnifeStyle();
+
         setupBold();
         setupItalic();
         setupUnderline();
@@ -173,7 +189,8 @@ public class MainActivity extends Activity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                knife.clearFormats();
+                // knife.clearFormats();
+                Log.e("html", Html.toHtml(knife.getText()));
             }
         });
 
@@ -237,6 +254,8 @@ public class MainActivity extends Activity {
                 knife.redo();
                 break;
             case R.id.github:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.app_repo)));
+                startActivity(intent);
                 break;
             default:
                 break;

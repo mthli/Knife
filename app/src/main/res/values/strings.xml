@@ -2,6 +2,7 @@
 
     <!-- Demo -->
     <string name="app_name">KnifeDemo</string>
+    <string name="app_repo">https://github.com/mthli/Knife</string>
 
     <!-- Menu -->
     <string name="menu_undo">Undo</string>

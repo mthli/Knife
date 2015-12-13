@@ -2,7 +2,6 @@ package io.github.mthli.knife;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -16,7 +15,6 @@ import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -83,17 +81,6 @@ public class KnifeText extends EditText implements TextWatcher {
         quoteStripeWidth = array.getDimensionPixelSize(R.styleable.KnifeText_quoteStripeWidth, 0);
         quoteGapWidth = array.getDimensionPixelSize(R.styleable.KnifeText_quoteCapWidth, 0);
         array.recycle();
-
-        Log.e("bulletColor", String.valueOf(bulletColor));
-        Log.e("bulletGapWidth", String.valueOf(bulletGapWidth));
-        Log.e("historyEnable", String.valueOf(historyEnable));
-        Log.e("historySize", String.valueOf(historySize));
-        Log.e("linkColor", String.valueOf(linkColor));
-        Log.e("linkUnderline", String.valueOf(linkUnderline));
-        Log.e("quoteColor", String.valueOf(quoteColor));
-        Log.e("quoteStripeWidth", String.valueOf(quoteStripeWidth));
-        Log.e("quoteGapWidth", String.valueOf(quoteGapWidth));
-        Log.e("parseColor", String.valueOf(Color.parseColor("#FF2196F3")));
 
         if (historyEnable && historySize <= 0) {
             throw new IllegalArgumentException("historySize size must > 0");
@@ -409,7 +396,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
             if (bulletStart < bulletEnd) {
                 if (bulletColor != 0 && bulletGapWidth != 0) {
-                    getEditableText().setSpan(new BulletSpan(bulletColor, bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    getEditableText().setSpan(new BulletSpan(bulletGapWidth, bulletColor), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else if (bulletGapWidth != 0) {
                     getEditableText().setSpan(new BulletSpan(bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 } else {
