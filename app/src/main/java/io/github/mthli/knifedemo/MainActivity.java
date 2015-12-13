@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +36,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         knife = (KnifeText) findViewById(R.id.knife);
+        // Use async would better; ImageGetter coming soon...
         knife.setText(Html.fromHtml(EXAMPLE, null, new KnifeTagHandler()));
+        // Switch EditText default style to KnifeText style
         knife.swicthToKnifeStyle();
         knife.setSelection(knife.getEditableText().length());
 
@@ -191,8 +192,7 @@ public class MainActivity extends Activity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // knife.clearFormats();
-                Log.e("html", Html.toHtml(knife.getText()));
+                knife.clearFormats();
             }
         });
 
