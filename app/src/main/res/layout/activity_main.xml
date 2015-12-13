@@ -77,15 +77,6 @@
                          android:background="?android:selectableItemBackground">
             </ImageButton>
 
-            <ImageButton android:id="@+id/photo"
-                         android:contentDescription="@null"
-                         android:layout_width="48dp"
-                         android:layout_height="48dp"
-                         android:src="@drawable/ic_insert_photo"
-                         android:scaleType="center"
-                         android:background="?android:selectableItemBackground">
-            </ImageButton>
-
             <ImageButton android:id="@+id/clear"
                          android:contentDescription="@null"
                          android:layout_width="48dp"

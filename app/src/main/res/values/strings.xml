@@ -23,7 +23,6 @@
     <string name="toast_bullet">Bullet</string>
     <string name="toast_quote">Quote</string>
     <string name="toast_insert_link">Insert link</string>
-    <string name="toast_insert_photo">Insert photo</string>
     <string name="toast_format_clear">Format clear</string>
 
 </resources>

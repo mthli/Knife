@@ -30,7 +30,6 @@ public class MainActivity extends Activity {
         setupBullet();
         setupQuote();
         setupLink();
-        setupPhoto();
         setupClear();
     }
 
@@ -163,25 +162,6 @@ public class MainActivity extends Activity {
             @Override
             public boolean onLongClick(View v) {
                 Toast.makeText(MainActivity.this, R.string.toast_insert_link, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
-    }
-
-    private void setupPhoto() {
-        ImageButton photo = (ImageButton) findViewById(R.id.photo);
-
-        photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        photo.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_insert_photo, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

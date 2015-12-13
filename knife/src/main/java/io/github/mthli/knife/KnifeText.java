@@ -29,7 +29,6 @@ public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BULLET = 0x05;
     public static final int FORMAT_QUOTE = 0x06;
     public static final int FORMAT_LINK = 0x07;
-    public static final int FORMAT_IMAGE = 0x08;
 
     private int bulletColor = -1;
     private int bulletGapWidth = -1;
@@ -108,15 +107,9 @@ public class KnifeText extends EditText implements TextWatcher {
                 return containQuote();
             case FORMAT_LINK:
                 return containLink(getSelectionStart(), getSelectionEnd());
-            case FORMAT_IMAGE:
-                return containImage();
             default:
                 return false;
         }
-    }
-
-    private boolean containImage() {
-        return false;
     }
 
     // StyleSpan ===================================================================================
@@ -710,10 +703,6 @@ public class KnifeText extends EditText implements TextWatcher {
             return getEditableText().subSequence(start, end).toString().equals(builder.toString());
         }
     }
-
-    // ImageSpan ===================================================================================
-
-    // TODO
 
     // Redo/Undo ===================================================================================
 
