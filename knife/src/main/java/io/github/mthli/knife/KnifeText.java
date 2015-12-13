@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.text.Editable;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -38,9 +39,8 @@ public class KnifeText extends EditText implements TextWatcher {
     private int linkColor = -1;
     private boolean linkUnderline = true;
     private int quoteColor = -1;
+    private int quoteStripeWidth = -1;
     private int quoteGapWidth = -1;
-    private int strikethroughColor = -1;
-    private int underlineColor = -1;
 
     private List<Editable> historyList = new LinkedList<>();
     private boolean historyWorking = false;
@@ -79,9 +79,8 @@ public class KnifeText extends EditText implements TextWatcher {
         linkColor = array.getColor(R.styleable.KnifeText_linkColor, -1);
         linkUnderline = array.getBoolean(R.styleable.KnifeText_linkUnderline, true);
         quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, -1);
+        quoteStripeWidth = array.getColor(R.styleable.KnifeText_quoteStripeWidth, -1);
         quoteGapWidth = array.getInt(R.styleable.KnifeText_quoteCapWidth, -1);
-        strikethroughColor = array.getColor(R.styleable.KnifeText_strikethroughColor, -1);
-        underlineColor = array.getColor(R.styleable.KnifeText_underlineColor, -1);
         array.recycle();
 
         if (historyEnable && historySize <= 0) {
@@ -100,29 +99,6 @@ public class KnifeText extends EditText implements TextWatcher {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeTextChangedListener(this);
-    }
-
-    // Contains ====================================================================================
-
-    public boolean contains(int format) {
-        switch (format) {
-            case FORMAT_BOLD:
-                return containStyle(Typeface.BOLD, getSelectionStart(), getSelectionEnd());
-            case FORMAT_ITALIC:
-                return containStyle(Typeface.ITALIC, getSelectionStart(), getSelectionEnd());
-            case FORMAT_UNDERLINED:
-                return containUnderline(getSelectionStart(), getSelectionEnd());
-            case FORMAT_STRIKETHROUGH:
-                return containStrikethrough(getSelectionStart(), getSelectionEnd());
-            case FORMAT_BULLET:
-                return containBullet();
-            case FORMAT_QUOTE:
-                return containQuote();
-            case FORMAT_LINK:
-                return containLink(getSelectionStart(), getSelectionEnd());
-            default:
-                return false;
-        }
     }
 
     // StyleSpan ===================================================================================
@@ -390,6 +366,7 @@ public class KnifeText extends EditText implements TextWatcher {
         }
     }
 
+    // TODO
     protected void bulletValid() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
 
@@ -558,11 +535,7 @@ public class KnifeText extends EditText implements TextWatcher {
             }
 
             if (quoteStart < quoteEnd) {
-                if (quoteColor >= 0) {
-                    getEditableText().setSpan(new QuoteSpan(quoteColor), quoteStart, quoteEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {
-                    getEditableText().setSpan(new QuoteSpan(), quoteStart, quoteEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                getEditableText().setSpan(new KnifeQuoteSpan(quoteColor, quoteStripeWidth, quoteGapWidth), quoteStart, quoteEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }
@@ -676,7 +649,7 @@ public class KnifeText extends EditText implements TextWatcher {
         }
 
         linkInvalid(start, end);
-        getEditableText().setSpan(new URLSpan(link), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getEditableText().setSpan(new KnifeURLSpan(link, linkColor, linkUnderline), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     // Remove all span in selection, not like the boldInvalid()
@@ -813,9 +786,64 @@ public class KnifeText extends EditText implements TextWatcher {
 
     // Helper ======================================================================================
 
+    public boolean contains(int format) {
+        switch (format) {
+            case FORMAT_BOLD:
+                return containStyle(Typeface.BOLD, getSelectionStart(), getSelectionEnd());
+            case FORMAT_ITALIC:
+                return containStyle(Typeface.ITALIC, getSelectionStart(), getSelectionEnd());
+            case FORMAT_UNDERLINED:
+                return containUnderline(getSelectionStart(), getSelectionEnd());
+            case FORMAT_STRIKETHROUGH:
+                return containStrikethrough(getSelectionStart(), getSelectionEnd());
+            case FORMAT_BULLET:
+                return containBullet();
+            case FORMAT_QUOTE:
+                return containQuote();
+            case FORMAT_LINK:
+                return containLink(getSelectionStart(), getSelectionEnd());
+            default:
+                return false;
+        }
+    }
+
     public void clearFormats() {
         setText(getEditableText().toString());
         setSelection(getEditableText().length());
+    }
+
+    // Cause setText() is final, so we can not override it
+    public void swicthToKnifeStyle() {
+        BulletSpan[] bulletSpans = getEditableText().getSpans(0, getEditableText().length(), BulletSpan.class);
+        for (BulletSpan span : bulletSpans) {
+            int start = getEditableText().getSpanStart(span);
+            int end = getEditableText().getSpanEnd(span);
+            getEditableText().removeSpan(span);
+
+            if (bulletColor >= 0 && bulletGapWidth >= 0) {
+                getEditableText().setSpan(new BulletSpan(bulletColor, bulletGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else if (bulletGapWidth >= 0) {
+                getEditableText().setSpan(new BulletSpan(bulletGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                getEditableText().setSpan(new BulletSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+
+        QuoteSpan[] quoteSpans = getEditableText().getSpans(0, getEditableText().length(), QuoteSpan.class);
+        for (QuoteSpan span : quoteSpans) {
+            int start = getEditableText().getSpanStart(span);
+            int end = getEditableText().getSpanEnd(span);
+            getEditableText().removeSpan(span);
+            getEditableText().setSpan(new KnifeQuoteSpan(quoteColor, quoteStripeWidth, quoteGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        URLSpan[] urlSpans = getEditableText().getSpans(0, getEditableText().length(), URLSpan.class);
+        for (URLSpan span : urlSpans) {
+            int start = getEditableText().getSpanStart(span);
+            int end = getEditableText().getSpanEnd(span);
+            getEditableText().removeSpan(span);
+            getEditableText().setSpan(new KnifeURLSpan(span.getURL(), linkColor, linkUnderline), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     public void hideSoftInput() {
