@@ -4,11 +4,10 @@
     <string name="app_name">KnifeDemo</string>
 
     <!-- Menu -->
-    <string name="menu_insert_photo">Insert photo</string>
-    <string name="menu_format_clear">Format clear</string>
+    <string name="menu_undo">Undo</string>
+    <string name="menu_redo">Redo</string>
     <string name="menu_import">Import</string>
     <string name="menu_export">Export</string>
-    <string name="menu_about">About</string>
 
     <!-- Dialog -->
     <string name="dialog_title">Insert link</string>
@@ -24,5 +23,7 @@
     <string name="toast_bullet">Bullet</string>
     <string name="toast_quote">Quote</string>
     <string name="toast_insert_link">Insert link</string>
+    <string name="toast_insert_photo">Insert photo</string>
+    <string name="toast_format_clear">Format clear</string>
 
 </resources>

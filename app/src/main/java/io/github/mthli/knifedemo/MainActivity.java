@@ -30,6 +30,8 @@ public class MainActivity extends Activity {
         setupBullet();
         setupQuote();
         setupLink();
+        setupPhoto();
+        setupClear();
     }
 
     private void setupBold() {
@@ -166,6 +168,44 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void setupPhoto() {
+        ImageButton photo = (ImageButton) findViewById(R.id.photo);
+
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        photo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_insert_photo, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+    }
+
+    private void setupClear() {
+        ImageButton clear = (ImageButton) findViewById(R.id.clear);
+
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                knife.clearFormats();
+            }
+        });
+
+        clear.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_format_clear, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+    }
+
     private void showLinkDialog() {
         final int start = knife.getSelectionStart();
         final int end = knife.getSelectionEnd();
@@ -210,16 +250,13 @@ public class MainActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.insert_photo:
+            case R.id.undo:
                 break;
-            case R.id.format_clear:
-                knife.clearFormats();
+            case R.id.redo:
                 break;
             case R.id.inport:
                 break;
             case R.id.export:
-                break;
-            case R.id.about:
                 break;
             default:
                 break;

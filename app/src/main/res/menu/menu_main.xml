@@ -2,15 +2,15 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/insert_photo"
-          android:title="@string/menu_insert_photo"
-          android:icon="@drawable/ic_action_insert_photo"
+    <item android:id="@+id/undo"
+          android:title="@string/menu_undo"
+          android:icon="@drawable/ic_action_undo"
           android:showAsAction="ifRoom">
     </item>
 
-    <item android:id="@+id/format_clear"
-          android:title="@string/menu_format_clear"
-          android:icon="@drawable/ic_action_format_clear"
+    <item android:id="@+id/redo"
+          android:title="@string/menu_redo"
+          android:icon="@drawable/ic_action_redo"
           android:showAsAction="ifRoom">
     </item>
 
@@ -22,11 +22,6 @@
 
     <item android:id="@+id/export"
           android:title="@string/menu_export"
-          android:showAsAction="collapseActionView">
-    </item>
-
-    <item android:id="@+id/about"
-          android:title="@string/menu_about"
           android:showAsAction="collapseActionView">
     </item>
 

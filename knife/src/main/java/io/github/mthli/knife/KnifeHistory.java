@@ -4,13 +4,13 @@ public class KnifeHistory {
     private CharSequence text;
     private int start;
     private int count;
-    private int after;
+    private int change;
 
-    public KnifeHistory(CharSequence text, int start, int count, int after) {
+    public KnifeHistory(CharSequence text, int start, int count, int change) {
         this.text = text;
         this.start = start;
         this.count = count;
-        this.after = after;
+        this.change = change;
     }
 
     public CharSequence getText() {
@@ -25,7 +25,7 @@ public class KnifeHistory {
         return count;
     }
 
-    public int getAfter() {
-        return after;
+    public int getChange() {
+        return change;
     }
 }

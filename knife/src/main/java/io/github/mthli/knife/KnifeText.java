@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class KnifeText extends EditText implements TextWatcher {
@@ -32,13 +33,20 @@ public class KnifeText extends EditText implements TextWatcher {
 
     private int bulletColor = -1;
     private int bulletGapWidth = -1;
-    private int historyStack = 10;
+    private boolean historyEnable = true;
+    private int historySize = 10;
     private int linkColor = -1;
     private boolean linkUnderline = true;
     private int quoteColor = -1;
     private int quoteGapWidth = -1;
     private int strikethroughColor = -1;
     private int underlineColor = -1;
+
+    private List<KnifeHistory> redoList = new LinkedList<>();
+    private List<KnifeHistory> undoList = new LinkedList<>();
+    private boolean historyWorking = false;
+    private int redoCursor = 0;
+    private int undoCursor = 0;
 
     public KnifeText(Context context) {
         super(context);
@@ -65,7 +73,8 @@ public class KnifeText extends EditText implements TextWatcher {
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, -1);
         bulletGapWidth = array.getInt(R.styleable.KnifeText_bulletGapWidth, -1);
-        historyStack = array.getInt(R.styleable.KnifeText_historyStack, 10);
+        historyEnable = array.getBoolean(R.styleable.KnifeText_historyEnable, true);
+        historySize = array.getInt(R.styleable.KnifeText_historySize, 10);
         linkColor = array.getColor(R.styleable.KnifeText_linkColor, -1);
         linkUnderline = array.getBoolean(R.styleable.KnifeText_linkUnderline, true);
         quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, -1);
@@ -73,6 +82,10 @@ public class KnifeText extends EditText implements TextWatcher {
         strikethroughColor = array.getColor(R.styleable.KnifeText_strikethroughColor, -1);
         underlineColor = array.getColor(R.styleable.KnifeText_underlineColor, -1);
         array.recycle();
+
+        if (historyEnable && historySize <= 0) {
+            throw new IllegalArgumentException("historySize size must > 0");
+        }
 
         addTextChangedListener(this);
     }
@@ -704,39 +717,91 @@ public class KnifeText extends EditText implements TextWatcher {
 
     // Redo/Undo ===================================================================================
 
-    public void redo() {
-
-    }
-
-    public boolean redoValid() {
-        return false;
-    }
-
-    public void undo() {
-
-    }
-
-    public boolean undoValid() {
-        return false;
-    }
-
-    public void clearHistory() {
-
-    }
-
     @Override
     public void beforeTextChanged(CharSequence text, int start, int count, int after) {
+        if (!historyEnable || historyWorking) {
+            return;
+        }
 
+        if (undoList.size() < historySize) {
+            undoList.add(new KnifeHistory(text, start, count, after));
+        } else {
+            undoList.remove(0);
+            undoList.add(new KnifeHistory(text, start, count, after));
+        }
+
+        undoCursor = undoList.size() - 1;
     }
 
     @Override
     public void onTextChanged(CharSequence text, int start, int before, int count) {
+        if (!historyEnable || historyWorking) {
+            return;
+        }
 
+        if (redoList.size() < historySize) {
+            redoList.add(new KnifeHistory(text, start, count, before));
+        } else {
+            redoList.remove(0);
+            redoList.add(new KnifeHistory(text, start, count, before));
+        }
+
+        redoCursor = redoList.size() - 1;
     }
 
     @Override
     public void afterTextChanged(Editable text) {
+        // DO NOTHING HERE
+    }
 
+    public void redo() {
+        if (!redoValid()) {
+            return;
+        }
+
+        // TODO
+    }
+
+    public void undo() {
+        if (!undoValid()) {
+            return;
+        }
+
+        // TODO
+    }
+
+    public boolean redoValid() {
+        if (!historyEnable || historyWorking) {
+            return false;
+        }
+
+        if (redoList.size() <= 0 || redoCursor >= redoList.size() - 1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean undoValid() {
+        if (!historyEnable || historyWorking) {
+            return false;
+        }
+
+        if (undoList.size() <= 0 || undoCursor <= 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void clearHistory() {
+        if (redoList != null) {
+            redoList.clear();
+        }
+
+        if (undoList != null) {
+            undoList.clear();
+        }
     }
 
     // Helper ======================================================================================
