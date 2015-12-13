@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import io.github.mthli.knife.KnifeTagHandler;
 import io.github.mthli.knife.KnifeText;
 
 public class MainActivity extends Activity {
@@ -23,7 +24,7 @@ public class MainActivity extends Activity {
     private static final String ITALIT = "<p><i>Italic</i></p>";
     private static final String UNDERLINE = "<p><u>Underline</u></p>";
     private static final String STRIKETHROUGH = "<p><s>Strikethrough</s></p>"; // <s> or <strike> or <del>
-    private static final String BULLET = "<p><ul><li>Bullet</li></ul></p>";
+    private static final String BULLET = "<p><ul><li>asdfg</li></ul></p>";
     private static final String QUOTE = "<p><blockquote>Quote</blockquote></p>";
     private static final String LINK = "<p><a href=\"https://github.com/mthli/Knife\">Link</a></p>";
     private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK;
@@ -36,8 +37,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         knife = (KnifeText) findViewById(R.id.knife);
-        knife.setText(Html.fromHtml(EXAMPLE));
+        knife.setText(Html.fromHtml(EXAMPLE, null, new KnifeTagHandler()));
         knife.swicthToKnifeStyle();
+        knife.setSelection(knife.getEditableText().length());
 
         setupBold();
         setupItalic();

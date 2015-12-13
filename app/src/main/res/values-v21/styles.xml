@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <style name="MainActivityTheme" parent="android:Theme.Material">
+        <item name="android:colorPrimary">@color/blue_500</item>
+        <item name="android:colorPrimaryDark">@color/blue_700</item>
+        <item name="android:colorAccent">@color/blue_500</item>
+    </style>
+
+</resources>
