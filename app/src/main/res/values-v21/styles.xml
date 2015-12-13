@@ -6,6 +6,13 @@
         <item name="android:colorPrimary">@color/blue_500</item>
         <item name="android:colorPrimaryDark">@color/blue_700</item>
         <item name="android:colorAccent">@color/blue_500</item>
+        <item name="android:alertDialogTheme">@style/MainActivityTheme.AlertDialogTheme</item>
+    </style>
+
+    <style name="MainActivityTheme.AlertDialogTheme" parent="android:Theme.Material.Dialog.Alert">
+        <item name="android:colorPrimary">@color/blue_500</item>
+        <item name="android:colorPrimaryDark">@color/blue_700</item>
+        <item name="android:colorAccent">@color/blue_500</item>
     </style>
 
 </resources>
