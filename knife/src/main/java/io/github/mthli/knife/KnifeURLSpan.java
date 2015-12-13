@@ -22,7 +22,7 @@ public class KnifeURLSpan extends URLSpan {
 
     @Override
     public void updateDrawState(TextPaint ds) {
-        if (linkColor != 0) {
+        if (linkColor == 0) {
             ds.setColor(ds.linkColor);
         } else {
             ds.setColor(linkColor);
