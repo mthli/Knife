@@ -11,7 +11,7 @@ Support Android 4.0+
 
 ![example.gif](./example.gif "example.gif")
 
-Here has a [demo apk]( "KnifeDemo.1.0.apk"), and it's [source code]( "KnifeDemo.1.0.apk's source code"), very easy to understand~
+Here has a [demo apk](https://github.com/mthli/Knife/releases/download/v1.0/KnifeDemo.1.0.apk "KnifeDemo.1.0.apk"), and it's [source code](https://github.com/mthli/Knife/tree/master/app "KnifeDemo.1.0.apk's source code"), very easy to understand~
 
 ## Api
 
