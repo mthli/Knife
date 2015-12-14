@@ -9,7 +9,7 @@ Support Android 4.0+
 
 ## Example
 
-
+![example.gif](./example.gif "example.gif")
 
 Here has a [demo apk]( "KnifeDemo.1.0.apk"), and it's [source code]( "KnifeDemo.1.0.apk's source code"), very easy to understand~
 
@@ -55,7 +55,7 @@ If you want to get more control of the editable text, just extend KnifeText to g
     
  - `app:quoteColor`
     
- - `app:quoteStripeWidth`
+ - `app:quoteStripeWidth` the quote line width.
     
  - `app:quoteCapWidth`
  
