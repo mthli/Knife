@@ -19,7 +19,7 @@ Here has a [demo apk]( "KnifeDemo.1.0.apk"), and it's [source code]( "KnifeDemo.
  
  - `italic(boolean valid)` _italic_ the selected text.
  
- - `underline(boolean valid)` <u>underline</u> the selected text.
+ - `underline(boolean valid)` \<u>underline\</u> the selected text.
  
  - `strikethrough(boolean valid)` <s>strikethrough</s> the selected text. 
  
