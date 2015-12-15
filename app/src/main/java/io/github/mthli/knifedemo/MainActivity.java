@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import io.github.mthli.knife.KnifeParser;
 import io.github.mthli.knife.KnifeTagHandler;
 import io.github.mthli.knife.KnifeText;
 
@@ -192,7 +194,9 @@ public class MainActivity extends Activity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                knife.clearFormats();
+                // knife.clearFormats();
+                Log.e("position", "-> " + knife.getSelectionStart());
+                Log.e("parser", "-> " + KnifeParser.toHtml(knife.getText()));
             }
         });
 
