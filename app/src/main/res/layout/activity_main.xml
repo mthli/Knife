@@ -106,6 +106,7 @@
             android:scrollbars="vertical"
             android:background="@android:color/transparent"
             app:bulletColor="@color/blue_500"
+            app:bulletRadius="@dimen/bullet_radius"
             app:bulletGapWidth="@dimen/bullet_gap_width"
             app:historyEnable="true"
             app:historySize="99"

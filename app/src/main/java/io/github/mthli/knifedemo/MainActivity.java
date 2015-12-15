@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
         // Use async would better; ImageGetter coming soon...
         knife.setText(Html.fromHtml(EXAMPLE, null, new KnifeTagHandler()));
         // Switch EditText default style to KnifeText style
-        knife.swicthToKnifeStyle();
+        knife.switchToKnifeStyle();
         knife.setSelection(knife.getEditableText().length());
 
         setupBold();

@@ -18,6 +18,7 @@
 
     <declare-styleable name="KnifeText">
         <attr name="bulletColor" format="reference|color" />
+        <attr name="bulletRadius" format="reference|dimension" />
         <attr name="bulletGapWidth" format="reference|dimension" />
         <attr name="historyEnable" format="reference|boolean" />
         <attr name="historySize" format="reference|integer" />

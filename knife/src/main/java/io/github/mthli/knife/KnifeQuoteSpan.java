@@ -26,22 +26,14 @@ public class KnifeQuoteSpan extends QuoteSpan {
     private static final int DEFAULT_GAP_WIDTH = 2;
     private static final int DEFAULT_COLOR = 0xff0000ff;
 
-    private int quoteColor = DEFAULT_COLOR;
-    private int quoteStripeWidth = DEFAULT_STRIPE_WIDTH;
-    private int quoteGapWidth = DEFAULT_GAP_WIDTH;
+    private int quoteColor;
+    private int quoteStripeWidth;
+    private int quoteGapWidth;
 
     public KnifeQuoteSpan(int quoteColor, int quoteStripeWidth, int quoteGapWidth) {
-        if (quoteColor != 0) {
-            this.quoteColor = quoteColor;
-        }
-
-        if (quoteStripeWidth != 0) {
-            this.quoteStripeWidth = quoteStripeWidth;
-        }
-
-        if (quoteGapWidth != 0) {
-            this.quoteGapWidth = quoteGapWidth;
-        }
+        this.quoteColor = quoteColor != 0 ? quoteColor : DEFAULT_COLOR;
+        this.quoteStripeWidth = quoteStripeWidth != 0 ? quoteStripeWidth : DEFAULT_STRIPE_WIDTH;
+        this.quoteGapWidth = quoteGapWidth != 0 ? quoteGapWidth : DEFAULT_GAP_WIDTH;
     }
 
     @Override

@@ -48,6 +48,7 @@ public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_LINK = 0x07;
 
     private int bulletColor = 0;
+    private int bulletRadius = 0;
     private int bulletGapWidth = 0;
     private boolean historyEnable = true;
     private int historySize = 100;
@@ -88,6 +89,7 @@ public class KnifeText extends EditText implements TextWatcher {
     private void init(AttributeSet attrs) {
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, 0);
+        bulletRadius = array.getDimensionPixelSize(R.styleable.KnifeText_bulletRadius, 0);
         bulletGapWidth = array.getDimensionPixelSize(R.styleable.KnifeText_bulletGapWidth, 0);
         historyEnable = array.getBoolean(R.styleable.KnifeText_historyEnable, true);
         historySize = array.getInt(R.styleable.KnifeText_historySize, 100);
@@ -99,7 +101,7 @@ public class KnifeText extends EditText implements TextWatcher {
         array.recycle();
 
         if (historyEnable && historySize <= 0) {
-            throw new IllegalArgumentException("historySize size must > 0");
+            throw new IllegalArgumentException("historySize must > 0");
         }
     }
 
@@ -411,13 +413,7 @@ public class KnifeText extends EditText implements TextWatcher {
             }
 
             if (bulletStart < bulletEnd) {
-                if (bulletColor != 0 && bulletGapWidth != 0) {
-                    getEditableText().setSpan(new BulletSpan(bulletGapWidth, bulletColor), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else if (bulletGapWidth != 0) {
-                    getEditableText().setSpan(new BulletSpan(bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {
-                    getEditableText().setSpan(new BulletSpan(), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                getEditableText().setSpan(new KnifeBulletSpan(bulletColor, bulletRadius, bulletGapWidth), bulletStart, bulletEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }
@@ -827,20 +823,13 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     // Cause setText() is final, so we can not override it
-    public void swicthToKnifeStyle() {
+    public void switchToKnifeStyle() {
         BulletSpan[] bulletSpans = getEditableText().getSpans(0, getEditableText().length(), BulletSpan.class);
         for (BulletSpan span : bulletSpans) {
             int start = getEditableText().getSpanStart(span);
             int end = getEditableText().getSpanEnd(span);
             getEditableText().removeSpan(span);
-
-            if (bulletColor != 0 && bulletGapWidth != 0) {
-                getEditableText().setSpan(new BulletSpan(bulletGapWidth, bulletColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            } else if (bulletGapWidth != 0) {
-                getEditableText().setSpan(new BulletSpan(bulletGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            } else {
-                getEditableText().setSpan(new BulletSpan(), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+            getEditableText().setSpan(new KnifeBulletSpan(bulletColor, bulletRadius, bulletGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         QuoteSpan[] quoteSpans = getEditableText().getSpans(0, getEditableText().length(), QuoteSpan.class);
