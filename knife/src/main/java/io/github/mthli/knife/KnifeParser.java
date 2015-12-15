@@ -18,6 +18,7 @@
 package io.github.mthli.knife;
 
 import android.graphics.Typeface;
+import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BulletSpan;
@@ -31,6 +32,11 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
 public class KnifeParser {
+    // TODO switch
+    public static Spanned fromHtml(String text) {
+        return Html.fromHtml(text, null, new KnifeTagHandler());
+    }
+
     public static String toHtml(Spanned text) {
         StringBuilder out = new StringBuilder();
         withinHtml(out, text);
@@ -42,20 +48,45 @@ public class KnifeParser {
 
         for (int i = 0; i < text.length(); i = next) {
             next = text.nextSpanTransition(i, text.length(), ParagraphStyle.class);
-            withinContent(out, text, i, next);
 
             ParagraphStyle[] styles = text.getSpans(i, next, ParagraphStyle.class);
-            for (ParagraphStyle style : styles) {
-                if (style instanceof BulletSpan) {
-                    withinBullet(out, text, i, next);
-                } else if (style instanceof QuoteSpan) {
-                    withinQuote(out, text, i, next);
+            if (styles.length == 2) {
+                if (styles[0] instanceof BulletSpan && styles[1] instanceof QuoteSpan) {
+                    withinBulletThenQuote(out, text, i, next);
+                } else if (styles[0] instanceof QuoteSpan && styles[1] instanceof BulletSpan) {
+                    withinQuoteThenBullet(out, text, i, next);
+                } else {
+                    withinContent(out, text, i, next);
                 }
+            } else if (styles.length == 1) {
+                if (styles[0] instanceof BulletSpan) {
+                    withinBullet(out, text, i, next);
+                } else if (styles[0] instanceof QuoteSpan) {
+                    withinQuote(out, text, i, next);
+                } else {
+                    withinContent(out, text, i, next);
+                }
+            } else {
+                withinContent(out, text, i, next);
             }
         }
     }
 
+    private static void withinBulletThenQuote(StringBuilder out, Spanned text, int start, int end) {
+        out.append("<ul><li>");
+        withinQuote(out, text, start, end);
+        out.append("</li></ul>");
+    }
+
+    private static void withinQuoteThenBullet(StringBuilder out, Spanned text, int start, int end) {
+        out.append("<blockquote>");
+        withinBullet(out, text, start, end);
+        out.append("</blockquote>");
+    }
+
     private static void withinBullet(StringBuilder out, Spanned text, int start, int end) {
+        out.append("<ul>");
+
         int next;
 
         for (int i = start; i < end; i = next) {
@@ -71,6 +102,8 @@ public class KnifeParser {
                 out.append("</li>");
             }
         }
+
+        out.append("</ul>");
     }
 
     private static void withinQuote(StringBuilder out, Spanned text, int start, int end) {
