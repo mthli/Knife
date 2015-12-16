@@ -32,9 +32,8 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
 public class KnifeParser {
-    // TODO switch
-    public static Spanned fromHtml(String text) {
-        return Html.fromHtml(text, null, new KnifeTagHandler());
+    public static Spanned fromHtml(String source) {
+        return Html.fromHtml(source, null, new KnifeTagHandler());
     }
 
     public static String toHtml(Spanned text) {

@@ -30,10 +30,10 @@ import android.text.style.StrikethroughSpan;
 import org.xml.sax.XMLReader;
 
 public class KnifeTagHandler implements Html.TagHandler {
-    public static final String BULLET_LI = "li";
-    public static final String STRIKETHROUGH_S = "s";
-    public static final String STRIKETHROUGH_STRIKE = "strike";
-    public static final String STRIKETHROUGH_DEL = "del";
+    private static final String BULLET_LI = "li";
+    private static final String STRIKETHROUGH_S = "s";
+    private static final String STRIKETHROUGH_STRIKE = "strike";
+    private static final String STRIKETHROUGH_DEL = "del";
 
     private static class Li {}
     private static class Strike {}

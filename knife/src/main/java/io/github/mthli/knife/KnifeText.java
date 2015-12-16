@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.text.Editable;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -822,33 +823,6 @@ public class KnifeText extends EditText implements TextWatcher {
         setSelection(getEditableText().length());
     }
 
-    // Cause setText() is final, so we can not override it
-    public void switchToKnifeStyle() {
-        BulletSpan[] bulletSpans = getEditableText().getSpans(0, getEditableText().length(), BulletSpan.class);
-        for (BulletSpan span : bulletSpans) {
-            int start = getEditableText().getSpanStart(span);
-            int end = getEditableText().getSpanEnd(span);
-            getEditableText().removeSpan(span);
-            getEditableText().setSpan(new KnifeBulletSpan(bulletColor, bulletRadius, bulletGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-
-        QuoteSpan[] quoteSpans = getEditableText().getSpans(0, getEditableText().length(), QuoteSpan.class);
-        for (QuoteSpan span : quoteSpans) {
-            int start = getEditableText().getSpanStart(span);
-            int end = getEditableText().getSpanEnd(span);
-            getEditableText().removeSpan(span);
-            getEditableText().setSpan(new KnifeQuoteSpan(quoteColor, quoteStripeWidth, quoteGapWidth), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-
-        URLSpan[] urlSpans = getEditableText().getSpans(0, getEditableText().length(), URLSpan.class);
-        for (URLSpan span : urlSpans) {
-            int start = getEditableText().getSpanStart(span);
-            int end = getEditableText().getSpanEnd(span);
-            getEditableText().removeSpan(span);
-            getEditableText().setSpan(new KnifeURLSpan(span.getURL(), linkColor, linkUnderline), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-    }
-
     public void hideSoftInput() {
         clearFocus();
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -859,5 +833,42 @@ public class KnifeText extends EditText implements TextWatcher {
         requestFocus();
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    public void fromHtml(String source) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(KnifeParser.fromHtml(source));
+        switchToKnifeStyle(builder, 0, builder.length());
+        setText(builder);
+    }
+
+    public String toHtml() {
+        return KnifeParser.toHtml(getEditableText());
+    }
+
+    protected void switchToKnifeStyle(Editable editable, int start, int end) {
+        BulletSpan[] bulletSpans = editable.getSpans(start, end, BulletSpan.class);
+        for (BulletSpan span : bulletSpans) {
+            int spanStart = editable.getSpanStart(span);
+            int spanEnd = editable.getSpanEnd(span);
+            editable.removeSpan(span);
+            editable.setSpan(new KnifeBulletSpan(bulletColor, bulletRadius, bulletGapWidth), spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        QuoteSpan[] quoteSpans = editable.getSpans(start, end, QuoteSpan.class);
+        for (QuoteSpan span : quoteSpans) {
+            int spanStart = editable.getSpanStart(span);
+            int spanEnd = editable.getSpanEnd(span);
+            editable.removeSpan(span);
+            editable.setSpan(new KnifeQuoteSpan(quoteColor, quoteStripeWidth, quoteGapWidth), spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        URLSpan[] urlSpans = editable.getSpans(start, end, URLSpan.class);
+        for (URLSpan span : urlSpans) {
+            int spanStart = editable.getSpanStart(span);
+            int spanEnd = editable.getSpanEnd(span);
+            editable.removeSpan(span);
+            editable.setSpan(new KnifeURLSpan(span.getURL(), linkColor, linkUnderline), spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 }

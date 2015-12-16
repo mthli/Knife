@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import io.github.mthli.knife.KnifeParser;
-import io.github.mthli.knife.KnifeTagHandler;
 import io.github.mthli.knife.KnifeText;
 
 public class MainActivity extends Activity {
@@ -38,10 +36,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         knife = (KnifeText) findViewById(R.id.knife);
-        // Use async would better; ImageGetter coming soon...
-        knife.setText(Html.fromHtml(EXAMPLE, null, new KnifeTagHandler()));
-        // Switch EditText default style to KnifeText style
-        knife.switchToKnifeStyle();
+        // ImageGetter coming soon...
+        knife.fromHtml(EXAMPLE);
         knife.setSelection(knife.getEditableText().length());
 
         setupBold();
@@ -195,8 +191,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // knife.clearFormats();
-                Log.e("position", "-> " + knife.getSelectionStart());
-                Log.e("parser", "-> " + KnifeParser.toHtml(knife.getText()));
+                Log.e("parser", KnifeParser.toHtml(knife.getText()));
             }
         });
 
