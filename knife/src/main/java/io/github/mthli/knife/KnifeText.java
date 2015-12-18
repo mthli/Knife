@@ -851,6 +851,7 @@ public class KnifeText extends EditText implements TextWatcher {
         for (BulletSpan span : bulletSpans) {
             int spanStart = editable.getSpanStart(span);
             int spanEnd = editable.getSpanEnd(span);
+            spanEnd = 0 < spanEnd && spanEnd < editable.length() && editable.charAt(spanEnd) == '\n' ? spanEnd - 1 : spanEnd;
             editable.removeSpan(span);
             editable.setSpan(new KnifeBulletSpan(bulletColor, bulletRadius, bulletGapWidth), spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -859,6 +860,7 @@ public class KnifeText extends EditText implements TextWatcher {
         for (QuoteSpan span : quoteSpans) {
             int spanStart = editable.getSpanStart(span);
             int spanEnd = editable.getSpanEnd(span);
+            spanEnd = 0 < spanEnd && spanEnd < editable.length() && editable.charAt(spanEnd) == '\n' ? spanEnd - 1 : spanEnd;
             editable.removeSpan(span);
             editable.setSpan(new KnifeQuoteSpan(quoteColor, quoteStripeWidth, quoteGapWidth), spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
