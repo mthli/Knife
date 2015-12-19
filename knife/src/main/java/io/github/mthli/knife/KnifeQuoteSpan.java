@@ -18,6 +18,7 @@ package io.github.mthli.knife;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Parcel;
 import android.text.Layout;
 import android.text.style.QuoteSpan;
 
@@ -34,6 +35,21 @@ public class KnifeQuoteSpan extends QuoteSpan {
         this.quoteColor = quoteColor != 0 ? quoteColor : DEFAULT_COLOR;
         this.quoteStripeWidth = quoteStripeWidth != 0 ? quoteStripeWidth : DEFAULT_STRIPE_WIDTH;
         this.quoteGapWidth = quoteGapWidth != 0 ? quoteGapWidth : DEFAULT_GAP_WIDTH;
+    }
+
+    public KnifeQuoteSpan(Parcel src) {
+        super(src);
+        this.quoteColor = src.readInt();
+        this.quoteStripeWidth = src.readInt();
+        this.quoteGapWidth = src.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(quoteColor);
+        dest.writeInt(quoteStripeWidth);
+        dest.writeInt(quoteGapWidth);
     }
 
     @Override

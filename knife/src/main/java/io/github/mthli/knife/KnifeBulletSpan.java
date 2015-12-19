@@ -19,6 +19,7 @@ package io.github.mthli.knife;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Parcel;
 import android.text.Layout;
 import android.text.Spanned;
 import android.text.style.BulletSpan;
@@ -37,6 +38,21 @@ public class KnifeBulletSpan extends BulletSpan {
         this.bulletColor = bulletColor != 0 ? bulletColor : DEFAULT_COLOR;
         this.bulletRadius = bulletRadius != 0 ? bulletRadius : DEFAULT_RADIUS;
         this.bulletGapWidth = bulletGapWidth != 0 ? bulletGapWidth : DEFAULT_GAP_WIDTH;
+    }
+
+    public KnifeBulletSpan(Parcel src) {
+        super(src);
+        this.bulletColor = src.readInt();
+        this.bulletRadius = src.readInt();
+        this.bulletGapWidth = src.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(bulletColor);
+        dest.writeInt(bulletRadius);
+        dest.writeInt(bulletGapWidth);
     }
 
     @Override

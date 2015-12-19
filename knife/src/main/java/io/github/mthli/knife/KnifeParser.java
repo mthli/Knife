@@ -123,6 +123,7 @@ public class KnifeParser {
         }
     }
 
+    // TODO
     private static void withinContent(StringBuilder out, Spanned text, int start, int end) {
         out.append("<p>");
 
@@ -140,6 +141,7 @@ public class KnifeParser {
                 next++;
             }
 
+            // TODO
             if (withinParagraph(out, text, i, next - nl, nl, next == end)) {
                 out.append("</p><p>");
             }
@@ -148,6 +150,7 @@ public class KnifeParser {
         out.append("</p>");
     }
 
+    // TODO
     // Copy from https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java,
     // remove some tag because we don't need them in Knife.
     private static boolean withinParagraph(StringBuilder out, Spanned text, int start, int end, int nl, boolean last) {
