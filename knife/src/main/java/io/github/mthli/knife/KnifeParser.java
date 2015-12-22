@@ -32,6 +32,7 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
 public class KnifeParser {
+    // TODO
     public static Spanned fromHtml(String source) {
         return Html.fromHtml(source, null, new KnifeTagHandler());
     }
@@ -52,21 +53,25 @@ public class KnifeParser {
             if (styles.length == 2) {
                 if (styles[0] instanceof BulletSpan && styles[1] instanceof QuoteSpan) {
                     withinBulletThenQuote(out, text, i, next);
+                    next++; // Skip the char '\n' at the end of BulletSpan or QuoteSpan
                 } else if (styles[0] instanceof QuoteSpan && styles[1] instanceof BulletSpan) {
                     withinQuoteThenBullet(out, text, i, next);
+                    next++;
                 } else {
-                    withinContent(out, text, i, next);
+                    withinContent(out, text, i, next, false);
                 }
             } else if (styles.length == 1) {
                 if (styles[0] instanceof BulletSpan) {
                     withinBullet(out, text, i, next);
+                    next++;
                 } else if (styles[0] instanceof QuoteSpan) {
                     withinQuote(out, text, i, next);
+                    next++;
                 } else {
-                    withinContent(out, text, i, next);
+                    withinContent(out, text, i, next, false);
                 }
             } else {
-                withinContent(out, text, i, next);
+                withinContent(out, text, i, next, false);
             }
         }
     }
@@ -96,7 +101,7 @@ public class KnifeParser {
                 out.append("<li>");
             }
 
-            withinContent(out, text, i, next);
+            withinContent(out, text, i, next, true);
             for (BulletSpan span : spans) {
                 out.append("</li>");
             }
@@ -116,15 +121,16 @@ public class KnifeParser {
                 out.append("<blockquote>");
             }
 
-            withinContent(out, text, i, next);
+            withinContent(out, text, i, next, true);
             for (QuoteSpan quote : quotes) {
                 out.append("</blockquote>");
             }
         }
     }
 
-    // TODO
-    private static void withinContent(StringBuilder out, Spanned text, int start, int end) {
+    // bq means come from BulletSpan or QuoteSpan,
+    // we should parse the char '\n' at the end of these spans
+    private static void withinContent(StringBuilder out, Spanned text, int start, int end, boolean bq) {
         out.append("<p>");
 
         int next;
@@ -141,19 +147,20 @@ public class KnifeParser {
                 next++;
             }
 
-            // TODO
-            if (withinParagraph(out, text, i, next - nl, nl, next == end)) {
-                out.append("</p><p>");
+            if (bq && next < text.length() && text.charAt(next) == '\n') {
+                nl++;
+                next++;
             }
+
+            withinParagraph(out, text, i, next - nl, nl);
         }
 
         out.append("</p>");
     }
 
-    // TODO
     // Copy from https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java,
     // remove some tag because we don't need them in Knife.
-    private static boolean withinParagraph(StringBuilder out, Spanned text, int start, int end, int nl, boolean last) {
+    private static void withinParagraph(StringBuilder out, Spanned text, int start, int end, int br) {
         int next;
 
         for (int i = start; i < end; i = next) {
@@ -199,7 +206,6 @@ public class KnifeParser {
             }
 
             withinStyle(out, text, i, next);
-
             for (int j = spans.length - 1; j >= 0; j--) {
                 if (spans[j] instanceof URLSpan) {
                     out.append("</a>");
@@ -226,15 +232,8 @@ public class KnifeParser {
             }
         }
 
-        if (nl == 1) {
+        for (int i = 0 ; i < br; i++) {
             out.append("<br>");
-            return false;
-        } else {
-            for (int i = 2; i < nl; i++) {
-                out.append("<br>");
-            }
-
-            return !last;
         }
     }
 
