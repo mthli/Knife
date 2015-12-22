@@ -30,9 +30,9 @@ import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 
 public class KnifeParser {
-    // TODO
     public static Spanned fromHtml(String source) {
         return Html.fromHtml(source, null, new KnifeTagHandler());
     }
@@ -131,8 +131,11 @@ public class KnifeParser {
     // bq means come from BulletSpan or QuoteSpan,
     // we should parse the char '\n' at the end of these spans
     private static void withinContent(StringBuilder out, Spanned text, int start, int end, boolean bq) {
-        out.append("<p>");
+        if (end - start <= 0 || end - start == 1 && start < text.length() && text.charAt(start) == '\n') {
+            return;
+        }
 
+        out.append("<p>");
         int next;
 
         for (int i = start; i < end; i = next) {
@@ -152,7 +155,16 @@ public class KnifeParser {
                 next++;
             }
 
-            withinParagraph(out, text, i, next - nl, nl);
+            withinParagraph(out, text, i, next - nl);
+
+            nl = !bq && nl > 1 ? nl - 1 : nl; // TODO 修改判断条件
+            for (int j = 0; j < nl; j++) {
+                out.append("<br>");
+
+                if (next < end || next >= end && j + 1 < nl) {
+                    out.append("</p><p>");
+                }
+            }
         }
 
         out.append("</p>");
@@ -160,7 +172,7 @@ public class KnifeParser {
 
     // Copy from https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java,
     // remove some tag because we don't need them in Knife.
-    private static void withinParagraph(StringBuilder out, Spanned text, int start, int end, int br) {
+    private static void withinParagraph(StringBuilder out, Spanned text, int start, int end) {
         int next;
 
         for (int i = start; i < end; i = next) {
@@ -225,15 +237,12 @@ public class KnifeParser {
                     if ((style & Typeface.BOLD) != 0) {
                         out.append("</b>");
                     }
+
                     if ((style & Typeface.ITALIC) != 0) {
                         out.append("</i>");
                     }
                 }
             }
-        }
-
-        for (int i = 0 ; i < br; i++) {
-            out.append("<br>");
         }
     }
 
