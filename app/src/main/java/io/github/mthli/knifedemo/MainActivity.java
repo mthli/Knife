@@ -23,8 +23,8 @@ public class MainActivity extends Activity {
     private static final String ITALIT = "<i>Italic</i><br><br>";
     private static final String UNDERLINE = "<u>Underline</u><br><br>";
     private static final String STRIKETHROUGH = "<s>Strikethrough</s><br><br>"; // <s> or <strike> or <del>
-    private static final String BULLET = "<ul><li>asdfg<br></li></ul>";
-    private static final String QUOTE = "<blockquote>Quote<br></blockquote>";
+    private static final String BULLET = "<ul><li>asdfg</li></ul>";
+    private static final String QUOTE = "<blockquote>Quote</blockquote>";
     private static final String LINK = "<a href=\"https://github.com/mthli/Knife\">Link</a><br><br>";
     private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK;
 

@@ -51,11 +51,12 @@ public class KnifeParser {
             ParagraphStyle[] styles = text.getSpans(i, next, ParagraphStyle.class);
             if (styles.length == 2) {
                 if (styles[0] instanceof BulletSpan && styles[1] instanceof QuoteSpan) {
+                    // Let a <br> follow the BulletSpan or QuoteSpan end, so next++
                     withinBulletThenQuote(out, text, i, next++);
                 } else if (styles[0] instanceof QuoteSpan && styles[1] instanceof BulletSpan) {
                     withinQuoteThenBullet(out, text, i, next++);
                 } else {
-                    withinContent(out, text, i, next, false);
+                    withinContent(out, text, i, next);
                 }
             } else if (styles.length == 1) {
                 if (styles[0] instanceof BulletSpan) {
@@ -63,10 +64,10 @@ public class KnifeParser {
                 } else if (styles[0] instanceof QuoteSpan) {
                     withinQuote(out, text, i, next++);
                 } else {
-                    withinContent(out, text, i, next, false);
+                    withinContent(out, text, i, next);
                 }
             } else {
-                withinContent(out, text, i, next, false);
+                withinContent(out, text, i, next);
             }
         }
     }
@@ -96,7 +97,7 @@ public class KnifeParser {
                 out.append("<li>");
             }
 
-            withinContent(out, text, i, next, true);
+            withinContent(out, text, i, next);
             for (BulletSpan span : spans) {
                 out.append("</li>");
             }
@@ -116,14 +117,14 @@ public class KnifeParser {
                 out.append("<blockquote>");
             }
 
-            withinContent(out, text, i, next, true);
+            withinContent(out, text, i, next);
             for (QuoteSpan quote : quotes) {
                 out.append("</blockquote>");
             }
         }
     }
 
-    private static void withinContent(StringBuilder out, Spanned text, int start, int end, boolean bq) {
+    private static void withinContent(StringBuilder out, Spanned text, int start, int end) {
         int next;
 
         for (int i = start; i < end; i = next) {
@@ -136,12 +137,6 @@ public class KnifeParser {
             while (next < end && text.charAt(next) == '\n') {
                 next++;
                 nl++;
-            }
-
-            // Let a <br> follow the BulletSpan of QuoteSpan
-            if (bq && next < text.length() && text.charAt(next) == '\n') {
-                nl++;
-                next++;
             }
 
             withinParagraph(out, text, i, next - nl, nl);
