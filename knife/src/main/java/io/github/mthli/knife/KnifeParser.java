@@ -39,7 +39,7 @@ public class KnifeParser {
     public static String toHtml(Spanned text) {
         StringBuilder out = new StringBuilder();
         withinHtml(out, text);
-        return out.toString();
+        return tidy(out.toString());
     }
 
     private static void withinHtml(StringBuilder out, Spanned text) {
@@ -51,22 +51,22 @@ public class KnifeParser {
             ParagraphStyle[] styles = text.getSpans(i, next, ParagraphStyle.class);
             if (styles.length == 2) {
                 if (styles[0] instanceof BulletSpan && styles[1] instanceof QuoteSpan) {
-                    withinBulletThenQuote(out, text, i, next);
+                    withinBulletThenQuote(out, text, i, next++);
                 } else if (styles[0] instanceof QuoteSpan && styles[1] instanceof BulletSpan) {
-                    withinQuoteThenBullet(out, text, i, next);
+                    withinQuoteThenBullet(out, text, i, next++);
                 } else {
-                    withinContent(out, text, i, next);
+                    withinContent(out, text, i, next, false);
                 }
             } else if (styles.length == 1) {
                 if (styles[0] instanceof BulletSpan) {
-                    withinBullet(out, text, i, next);
+                    withinBullet(out, text, i, next++);
                 } else if (styles[0] instanceof QuoteSpan) {
-                    withinQuote(out, text, i, next);
+                    withinQuote(out, text, i, next++);
                 } else {
-                    withinContent(out, text, i, next);
+                    withinContent(out, text, i, next, false);
                 }
             } else {
-                withinContent(out, text, i, next);
+                withinContent(out, text, i, next, false);
             }
         }
     }
@@ -96,7 +96,7 @@ public class KnifeParser {
                 out.append("<li>");
             }
 
-            withinContent(out, text, i, next);
+            withinContent(out, text, i, next, true);
             for (BulletSpan span : spans) {
                 out.append("</li>");
             }
@@ -116,14 +116,14 @@ public class KnifeParser {
                 out.append("<blockquote>");
             }
 
-            withinContent(out, text, i, next);
+            withinContent(out, text, i, next, true);
             for (QuoteSpan quote : quotes) {
                 out.append("</blockquote>");
             }
         }
     }
 
-    private static void withinContent(StringBuilder out, Spanned text, int start, int end) {
+    private static void withinContent(StringBuilder out, Spanned text, int start, int end, boolean bq) {
         int next;
 
         for (int i = start; i < end; i = next) {
@@ -136,6 +136,12 @@ public class KnifeParser {
             while (next < end && text.charAt(next) == '\n') {
                 next++;
                 nl++;
+            }
+
+            // Let a <br> follow the BulletSpan of QuoteSpan
+            if (bq && next < text.length() && text.charAt(next) == '\n') {
+                nl++;
+                next++;
             }
 
             withinParagraph(out, text, i, next - nl, nl);
@@ -254,5 +260,9 @@ public class KnifeParser {
                 out.append(c);
             }
         }
+    }
+
+    private static String tidy(String html) {
+        return html.replaceAll("</ul>(<br>)?", "</ul>").replaceAll("</blockquote>(<br>)?", "</blockquote>");
     }
 }

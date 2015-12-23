@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -20,13 +19,13 @@ import io.github.mthli.knife.KnifeParser;
 import io.github.mthli.knife.KnifeText;
 
 public class MainActivity extends Activity {
-    private static final String BOLD = "<p><b>Bold</b></p>";
-    private static final String ITALIT = "<p><i>Italic</i></p>";
-    private static final String UNDERLINE = "<p><u>Underline</u></p>";
-    private static final String STRIKETHROUGH = "<p><s>Strikethrough</s></p>"; // <s> or <strike> or <del>
-    private static final String BULLET = "<ul><li><p>asdfg</p></li></ul>";
-    private static final String QUOTE = "<blockquote><p>Quote</p></blockquote>";
-    private static final String LINK = "<p><a href=\"https://github.com/mthli/Knife\">Link</a></p>";
+    private static final String BOLD = "<b>Bold</b><br><br>";
+    private static final String ITALIT = "<i>Italic</i><br><br>";
+    private static final String UNDERLINE = "<u>Underline</u><br><br>";
+    private static final String STRIKETHROUGH = "<s>Strikethrough</s><br><br>"; // <s> or <strike> or <del>
+    private static final String BULLET = "<ul><li>asdfg<br></li></ul>";
+    private static final String QUOTE = "<blockquote>Quote<br></blockquote>";
+    private static final String LINK = "<a href=\"https://github.com/mthli/Knife\">Link</a><br><br>";
     private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK;
 
     private KnifeText knife;
