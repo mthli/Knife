@@ -30,7 +30,6 @@ import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 
 public class KnifeParser {
     public static Spanned fromHtml(String source) {
@@ -146,18 +145,25 @@ public class KnifeParser {
 
             int nl = 0;
             while (next < end && text.charAt(next) == '\n') {
-                nl++;
                 next++;
+                nl++;
             }
 
+            // Add one char '\n' follow the BulletSpan's or QuoteSpan's end
             if (bq && next < text.length() && text.charAt(next) == '\n') {
-                nl++;
                 next++;
+                nl++;
             }
 
             withinParagraph(out, text, i, next - nl);
 
-            nl = !bq && nl > 1 ? nl - 1 : nl; // TODO 修改判断条件
+            // Skip one line that only contains one char '\n'
+            if (next - start <= 1) {
+                continue;
+            }
+
+            // Magic
+            nl = !bq && nl > 1 ? nl - 1 : nl;
             for (int j = 0; j < nl; j++) {
                 out.append("<br>");
 
