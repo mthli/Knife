@@ -20,13 +20,13 @@ import io.github.mthli.knife.KnifeParser;
 import io.github.mthli.knife.KnifeText;
 
 public class MainActivity extends Activity {
-    private static final String BOLD = "<p><b>Bold</b><br></p>";
-    private static final String ITALIT = "<p><i>Italic</i><br></p>";
-    private static final String UNDERLINE = "<p><u>Underline</u><br></p>";
-    private static final String STRIKETHROUGH = "<p><s>Strikethrough</s><br></p>"; // <s> or <strike> or <del>
-    private static final String BULLET = "<ul><li><p>asdfg<br></p></li></ul>";
-    private static final String QUOTE = "<blockquote><p>Quote<br></p></blockquote>";
-    private static final String LINK = "<p><a href=\"https://github.com/mthli/Knife\">Link</a><br></p>";
+    private static final String BOLD = "<p><b>Bold</b></p>";
+    private static final String ITALIT = "<p><i>Italic</i></p>";
+    private static final String UNDERLINE = "<p><u>Underline</u></p>";
+    private static final String STRIKETHROUGH = "<p><s>Strikethrough</s></p>"; // <s> or <strike> or <del>
+    private static final String BULLET = "<ul><li><p>asdfg</p></li></ul>";
+    private static final String QUOTE = "<blockquote><p>Quote</p></blockquote>";
+    private static final String LINK = "<p><a href=\"https://github.com/mthli/Knife\">Link</a></p>";
     private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK;
 
     private KnifeText knife;

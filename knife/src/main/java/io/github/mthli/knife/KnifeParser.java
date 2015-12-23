@@ -52,25 +52,21 @@ public class KnifeParser {
             if (styles.length == 2) {
                 if (styles[0] instanceof BulletSpan && styles[1] instanceof QuoteSpan) {
                     withinBulletThenQuote(out, text, i, next);
-                    next++; // Skip the char '\n' at the end of BulletSpan or QuoteSpan
                 } else if (styles[0] instanceof QuoteSpan && styles[1] instanceof BulletSpan) {
                     withinQuoteThenBullet(out, text, i, next);
-                    next++;
                 } else {
-                    withinContent(out, text, i, next, false);
+                    withinContent(out, text, i, next);
                 }
             } else if (styles.length == 1) {
                 if (styles[0] instanceof BulletSpan) {
                     withinBullet(out, text, i, next);
-                    next++;
                 } else if (styles[0] instanceof QuoteSpan) {
                     withinQuote(out, text, i, next);
-                    next++;
                 } else {
-                    withinContent(out, text, i, next, false);
+                    withinContent(out, text, i, next);
                 }
             } else {
-                withinContent(out, text, i, next, false);
+                withinContent(out, text, i, next);
             }
         }
     }
@@ -100,7 +96,7 @@ public class KnifeParser {
                 out.append("<li>");
             }
 
-            withinContent(out, text, i, next, true);
+            withinContent(out, text, i, next);
             for (BulletSpan span : spans) {
                 out.append("</li>");
             }
@@ -120,21 +116,14 @@ public class KnifeParser {
                 out.append("<blockquote>");
             }
 
-            withinContent(out, text, i, next, true);
+            withinContent(out, text, i, next);
             for (QuoteSpan quote : quotes) {
                 out.append("</blockquote>");
             }
         }
     }
 
-    // bq means come from BulletSpan or QuoteSpan,
-    // we should parse the char '\n' at the end of these spans
-    private static void withinContent(StringBuilder out, Spanned text, int start, int end, boolean bq) {
-        if (end - start <= 0 || end - start == 1 && start < text.length() && text.charAt(start) == '\n') {
-            return;
-        }
-
-        out.append("<p>");
+    private static void withinContent(StringBuilder out, Spanned text, int start, int end) {
         int next;
 
         for (int i = start; i < end; i = next) {
@@ -149,36 +138,13 @@ public class KnifeParser {
                 nl++;
             }
 
-            // Add one char '\n' follow the BulletSpan's or QuoteSpan's end
-            if (bq && next < text.length() && text.charAt(next) == '\n') {
-                next++;
-                nl++;
-            }
-
-            withinParagraph(out, text, i, next - nl);
-
-            // Skip one line that only contains one char '\n'
-            if (next - start <= 1) {
-                continue;
-            }
-
-            // Magic
-            nl = !bq && nl > 1 ? nl - 1 : nl;
-            for (int j = 0; j < nl; j++) {
-                out.append("<br>");
-
-                if (next < end || next >= end && j + 1 < nl) {
-                    out.append("</p><p>");
-                }
-            }
+            withinParagraph(out, text, i, next - nl, nl);
         }
-
-        out.append("</p>");
     }
 
     // Copy from https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/Html.java,
     // remove some tag because we don't need them in Knife.
-    private static void withinParagraph(StringBuilder out, Spanned text, int start, int end) {
+    private static void withinParagraph(StringBuilder out, Spanned text, int start, int end, int nl) {
         int next;
 
         for (int i = start; i < end; i = next) {
@@ -249,6 +215,10 @@ public class KnifeParser {
                     }
                 }
             }
+        }
+
+        for (int i = 0; i < nl; i++) {
+            out.append("<br>");
         }
     }
 
