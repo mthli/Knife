@@ -37,11 +37,17 @@ Here has a [demo apk](https://github.com/mthli/Knife/releases/download/v1.0/Knif
  
  - `undo()` when text change, you can also undo it!
  
+ - `fromHtml()` import from HTML file. 
+ 
+ - `toHtml()` export as HTML file.
+ 
 If you want to get more control of the editable text, just extend KnifeText to get all protected method.
 
 #### Custom
 
  - `app:bulletColor`
+ 
+ - `app:bulletRadius`
     
  - `app:bulletGapWidth`
  
@@ -62,8 +68,6 @@ If you want to get more control of the editable text, just extend KnifeText to g
 #### TODO
 
  - Insert image.
- 
- - Export as HTML file.
 
 ## Gradle
 
@@ -77,7 +81,7 @@ At your top-level `build.gradle` file:
 And then at your project `build.gradle` file:
 
     dependencies {
-        compile 'com.github.mthli:Knife:v1.0'
+        compile 'com.github.mthli:Knife:v1.1'
     }
     
 Done!
