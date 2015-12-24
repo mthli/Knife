@@ -1,6 +1,8 @@
 Knife
 ===
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Knife-brightgreen.svg?style=flat-square)](http://android-arsenal.com/details/1/2924)
+
 Knife (extend EditText) is a rich text editor component for writing documents in Android.
 
 Just select text and use one line code to style it!
