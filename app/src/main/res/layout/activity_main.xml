@@ -109,7 +109,7 @@
             app:bulletRadius="@dimen/bullet_radius"
             app:bulletGapWidth="@dimen/bullet_gap_width"
             app:historyEnable="true"
-            app:historySize="99"
+            app:historyMaxCapacity="99"
             app:linkColor="@color/blue_500"
             app:linkUnderline="true"
             app:quoteColor="@color/blue_500"

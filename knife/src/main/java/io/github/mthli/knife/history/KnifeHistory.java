@@ -1,18 +1,20 @@
 package io.github.mthli.knife.history;
 
+import android.text.Editable;
+
+import io.github.mthli.knife.history.action.Action;
+
 /**
  * Created by cauchywei on 16/1/8.
  */
 public class KnifeHistory {
 
-    interface Action {
-        void perform();
-    }
-
     interface HistoryStateChangeListener {
         void onUndoEnabledStateChange(boolean enable);
         void onRedoEnabledStateChange(boolean enable);
     }
+
+    public static final int DEFAULT_MAX_CAPACITY = 100;
 
     private boolean enabled = true;
     private boolean processing = false;
@@ -35,7 +37,7 @@ public class KnifeHistory {
             undoActionStack.push(action);
         }
     }
-    public void undo(){
+    public void undo(Editable editable){
 
         if (stateChangeListener != null && redoActionStack.isEmpty()) {
             stateChangeListener.onRedoEnabledStateChange(true);
@@ -43,7 +45,7 @@ public class KnifeHistory {
 
         Action pop = undoActionStack.pop();
         processing = true;
-        pop.perform();
+        pop.undo(editable);
         processing = false;
         redoActionStack.push(pop);
 
@@ -52,7 +54,7 @@ public class KnifeHistory {
         }
     }
 
-    public void redo(){
+    public void redo(Editable editable){
 
         if (stateChangeListener != null && undoActionStack.isEmpty()) {
             stateChangeListener.onUndoEnabledStateChange(true);
@@ -60,17 +62,32 @@ public class KnifeHistory {
 
         Action pop = redoActionStack.pop();
         processing = true;
-        pop.perform();
+        pop.redo(editable);
         processing = false;
         undoActionStack.push(pop);
 
-        if (stateChangeListener != null && redoActionStack.isEmpty() ) {
+        if (stateChangeListener != null  && redoActionStack.isEmpty() ) {
             stateChangeListener.onRedoEnabledStateChange(false);
         }
 
 
     }
 
+    public void clear() {
+        if (!undoActionStack.isEmpty()) {
+            undoActionStack.clear();
+            if (stateChangeListener != null) {
+                stateChangeListener.onUndoEnabledStateChange(false);
+            }
+        }
+
+        if (!redoActionStack.isEmpty()) {
+            redoActionStack.clear();
+            if (stateChangeListener != null) {
+                stateChangeListener.onRedoEnabledStateChange(false);
+            }
+        }
+    }
     public boolean isEnabled() {
         return enabled;
     }
