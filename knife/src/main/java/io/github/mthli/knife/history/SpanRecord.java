@@ -7,9 +7,9 @@ import android.text.ParcelableSpan;
  * Created by cauchywei on 16/1/9.
  */
 public class SpanRecord {
-    Object span;
-    int start;
-    int end;
+    public Object span;
+    public int start;
+    public int end;
 
     public SpanRecord(Object span, int start, int end) {
         this.span = span;

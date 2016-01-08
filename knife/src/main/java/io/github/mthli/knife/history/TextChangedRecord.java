@@ -11,10 +11,10 @@ import java.util.List;
  */
 public class TextChangedRecord {
 
-    CharSequence changedText;
-    int start;
-    int length;
-    List<SpanRecord> spanRecordList;
+    public CharSequence changedText;
+    public int start;
+    public int length;
+    public List<SpanRecord> spanRecordList;
 
     public TextChangedRecord(Editable editable,CharSequence text, int start, int length, Class[] spanClasses) {
         changedText = text.subSequence(start,start+length);
