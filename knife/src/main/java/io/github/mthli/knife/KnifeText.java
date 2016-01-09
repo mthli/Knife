@@ -571,16 +571,18 @@ public class KnifeText extends EditText implements TextWatcher {
     // QuoteSpan ===================================================================================
 
     public void quote(boolean valid) {
+        Action action;
         if (valid) {
-            quoteValid();
+            action = quoteValid();
         } else {
-            quoteInvalid();
+            action = quoteInvalid();
         }
+        history.record(action);
     }
 
-    protected void quoteValid() {
+    protected Action quoteValid() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
-
+        List<Action> actions = new ArrayList<>();
         for (int i = 0; i < lines.length; i++) {
             if (containQuote(i)) {
                 continue;
@@ -609,14 +611,15 @@ public class KnifeText extends EditText implements TextWatcher {
             if (quoteStart < quoteEnd) {
                 KnifeQuoteSpan newSpan = new KnifeQuoteSpan(quoteColor, quoteStripeWidth, quoteGapWidth);
                 getEditableText().setSpan(newSpan, quoteStart, quoteEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                history.record(new SpanAddedAction(newSpan, quoteStart, quoteEnd));
+                actions.add(new SpanAddedAction(newSpan, quoteStart, quoteEnd));
             }
         }
+        return new SequentialAction(actions.toArray(new Action[0]));
     }
 
-    protected void quoteInvalid() {
+    protected Action quoteInvalid() {
         String[] lines = TextUtils.split(getEditableText().toString(), "\n");
-
+        List<Action> actions = new ArrayList<>();
         for (int i = 0; i < lines.length; i++) {
             if (!containQuote(i)) {
                 continue;
@@ -645,14 +648,15 @@ public class KnifeText extends EditText implements TextWatcher {
             if (quoteStart < quoteEnd) {
                 Editable editableText = getEditableText();
                 QuoteSpan[] spans = editableText.getSpans(quoteStart, quoteEnd, QuoteSpan.class);
-                List<Action> actions = new ArrayList<>(spans.length);
+                List<Action> subActions = new ArrayList<>(spans.length);
                 for (QuoteSpan span : spans) {
                     editableText.removeSpan(span);
-                    actions.add(new SpanRemovedAction(span, editableText.getSpanStart(span), editableText.getSpanEnd(span)));
+                    subActions.add(new SpanRemovedAction(span, editableText.getSpanStart(span), editableText.getSpanEnd(span)));
                 }
-                history.record(new SequentialAction(actions.toArray(new Action[0])));
+               actions.add(new SequentialAction(actions.toArray(new Action[0])));
             }
         }
+        return new SequentialAction(actions.toArray(new Action[0]));
     }
 
     protected boolean containQuote() {
