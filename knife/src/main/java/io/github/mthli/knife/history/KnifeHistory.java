@@ -9,9 +9,9 @@ import io.github.mthli.knife.history.action.Action;
  */
 public class KnifeHistory {
 
-    interface HistoryStateChangeListener {
-        void onUndoEnabledStateChange(boolean enable);
-        void onRedoEnabledStateChange(boolean enable);
+    public interface HistoryStateChangeListener {
+        void onUndoEnabledStateChange(boolean enabled);
+        void onRedoEnabledStateChange(boolean enabled);
     }
 
     public static final int DEFAULT_MAX_CAPACITY = 100;

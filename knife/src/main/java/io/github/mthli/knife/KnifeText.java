@@ -75,6 +75,15 @@ public class KnifeText extends EditText implements TextWatcher {
     private KnifeHistory history = new KnifeHistory();
 
     private SpannableStringBuilder inputBefore;
+
+    public KnifeHistory.HistoryStateChangeListener getHistoryStateChangeListener() {
+        return history.getStateChangeListener();
+    }
+
+    public void setHistoryStateChangeListener(KnifeHistory.HistoryStateChangeListener historyStateChangeListener) {
+        history.setStateChangeListener(historyStateChangeListener);
+    }
+
     private Editable inputLast;
 
     public KnifeText(Context context) {
