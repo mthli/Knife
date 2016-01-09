@@ -17,7 +17,7 @@ public class StyleChangedAction implements Action {
     }
 
     @Override
-    public void onRemove() {
+    public void onRemoved() {
 
     }
 }

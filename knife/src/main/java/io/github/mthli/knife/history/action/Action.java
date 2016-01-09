@@ -10,5 +10,5 @@ public interface Action {
 
     void redo(Editable editable);
 
-    void onRemove();
+    void onRemoved();
 }

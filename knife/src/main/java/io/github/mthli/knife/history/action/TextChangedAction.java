@@ -35,6 +35,6 @@ public class TextChangedAction implements Action {
     }
 
     @Override
-    public void onRemove() {
+    public void onRemoved() {
     }
 }
