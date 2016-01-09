@@ -24,7 +24,7 @@ public class KnifeHistory {
 
 
     public void record(Action action) {
-        if (enabled) {
+        if (enabled && action !=null) {
             if (stateChangeListener != null) {
                 if (!redoActionStack.isEmpty()) {
                     stateChangeListener.onRedoEnabledStateChange(false);
