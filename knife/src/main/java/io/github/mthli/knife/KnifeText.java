@@ -38,12 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.mthli.knife.history.KnifeHistory;
-import io.github.mthli.knife.history.SpanRecord;
 import io.github.mthli.knife.history.action.Action;
 import io.github.mthli.knife.history.action.SequentialAction;
 import io.github.mthli.knife.history.action.SpanAddedAction;
 import io.github.mthli.knife.history.action.SpanRemovedAction;
-import io.github.mthli.knife.history.action.SpanReplacedAction;
 import io.github.mthli.knife.history.action.TextChangedAction;
 import io.github.mthli.knife.history.TextChangedRecord;
 import io.github.mthli.knife.history.action.TextReplacedAction;
@@ -113,7 +111,7 @@ public class KnifeText extends EditText implements TextWatcher {
         bulletRadius = array.getDimensionPixelSize(R.styleable.KnifeText_bulletRadius, 0);
         bulletGapWidth = array.getDimensionPixelSize(R.styleable.KnifeText_bulletGapWidth, 0);
         history.setEnabled(array.getBoolean(R.styleable.KnifeText_historyEnable, true));
-        history.setMaxCapacity(array.getInt(R.styleable.KnifeText_historyMaxCapacity, KnifeHistory.DEFAULT_MAX_CAPACITY));
+        history.setMaxCapacity(array.getInt(R.styleable.KnifeText_maxHistoryCapacity, KnifeHistory.DEFAULT_MAX_CAPACITY));
         linkColor = array.getColor(R.styleable.KnifeText_linkColor, 0);
         linkUnderline = array.getBoolean(R.styleable.KnifeText_linkUnderline, true);
         quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, 0);

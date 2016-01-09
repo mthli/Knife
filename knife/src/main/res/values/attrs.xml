@@ -21,7 +21,7 @@
         <attr name="bulletRadius" format="reference|dimension" />
         <attr name="bulletGapWidth" format="reference|dimension" />
         <attr name="historyEnable" format="reference|boolean" />
-        <attr name="historyMaxCapacity" format="reference|integer" />
+        <attr name="maxHistoryCapacity" format="reference|integer" />
         <attr name="linkColor" format="reference|color" />
         <attr name="linkUnderline" format="reference|boolean" />
         <attr name="quoteColor" format="reference|color" />
