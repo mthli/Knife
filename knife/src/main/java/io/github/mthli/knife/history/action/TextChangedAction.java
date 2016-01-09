@@ -26,12 +26,14 @@ public class TextChangedAction implements Action {
         for (SpanRecord beforeSpanRecord : before.spanRecordList) {
             editable.setSpan(beforeSpanRecord.span,beforeSpanRecord.start,beforeSpanRecord.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        Log.d("action","undo");
     }
 
     @Override
     public void redo(Editable editable) {
-
+        editable.replace(before.start,before.start+before.changedText.length(),after.getChangedText());
+        for (SpanRecord afterSpan : after.spanRecordList) {
+            editable.setSpan(afterSpan.span,afterSpan.start,afterSpan.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     @Override
