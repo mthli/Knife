@@ -10,16 +10,16 @@ import java.util.LinkedList;
  * it will remove the element in stack-bottom according to FIFO
  */
 public class CapacityLimitedStack<T> extends LinkedList<T> {
-
     public static final int DEFAULT_MAX_CAPACITY = Integer.MAX_VALUE;
-    private int maxCapacity;
 
-    public CapacityLimitedStack(int maxCapacity) {
-        this.maxCapacity = maxCapacity;
-    }
+    private int maxCapacity;
 
     public CapacityLimitedStack() {
         maxCapacity = DEFAULT_MAX_CAPACITY;
+    }
+
+    public CapacityLimitedStack(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
     }
 
     @Override
@@ -39,7 +39,6 @@ public class CapacityLimitedStack<T> extends LinkedList<T> {
 
         this.maxCapacity = maxCapacity;
         clearExtraElements();
-
     }
 
     public void clearExtraElements() {

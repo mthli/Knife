@@ -3,14 +3,12 @@ package io.github.mthli.knife.history.action;
 import android.text.Editable;
 import android.text.Spanned;
 
-import io.github.mthli.knife.KnifeURLSpan;
 import io.github.mthli.knife.history.SpanRecord;
 
 /**
  * Created by cauchywei on 16/1/9.
  */
 public class SpanAddedAction implements Action{
-
     private SpanRecord spanRecord;
 
     public SpanAddedAction(SpanRecord spanRecord) {
@@ -23,16 +21,14 @@ public class SpanAddedAction implements Action{
 
     @Override
     public void undo(Editable editable) {
-        editable.removeSpan(spanRecord.span);
+        editable.removeSpan(spanRecord.getSpan());
     }
 
     @Override
     public void redo(Editable editable) {
-        editable.setSpan(spanRecord.span,spanRecord.start,spanRecord.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        editable.setSpan(spanRecord.getSpan(), spanRecord.getStart(), spanRecord.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     @Override
-    public void onRemoved() {
-
-    }
+    public void onRemoved() {}
 }

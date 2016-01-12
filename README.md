@@ -13,7 +13,7 @@ Support Android 4.0+
 
 ![example.gif](./example.gif "example.gif")
 
-Here has a [demo apk](https://github.com/mthli/Knife/releases/download/v1.1/KnifeDemo.1.1.apk "KnifeDemo.1.1.apk"), and it's [source code](https://github.com/mthli/Knife/tree/master/app "KnifeDemo.1.1.apk's source code"), very easy to understand~
+Here has a [demo apk](https://github.com/mthli/Knife/releases/download/v1.2/KnifeDemo.1.2.apk "KnifeDemo.1.2.apk"), and it's [source code](https://github.com/mthli/Knife/tree/master/app "KnifeDemo.1.2.apk's source code"), very easy to understand~
 
 ## Api
 
@@ -55,7 +55,7 @@ If you want to get more control of the editable text, just extend KnifeText to g
  
  - `app:historyEnable` `true` to enable record history, so you can `redo()` and `undo()`.
     
- - `app:maxHistoryCapacity` the record max limit.
+ - `app:historyMaxCapacity` the record max limit.
     
  - `app:linkColor`
     
@@ -83,7 +83,7 @@ At your top-level `build.gradle` file:
 And then at your project `build.gradle` file:
 
     dependencies {
-        compile 'com.github.mthli:Knife:v1.1'
+        compile 'com.github.mthli:Knife:v1.2'
     }
     
 Done!

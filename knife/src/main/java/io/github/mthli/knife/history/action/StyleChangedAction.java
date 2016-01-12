@@ -7,17 +7,11 @@ import android.text.Editable;
  */
 public class StyleChangedAction implements Action {
     @Override
-    public void undo(Editable editable) {
-
-    }
+    public void undo(Editable editable) {}
 
     @Override
-    public void redo(Editable editable) {
-
-    }
+    public void redo(Editable editable) {}
 
     @Override
-    public void onRemoved() {
-
-    }
+    public void onRemoved() {}
 }

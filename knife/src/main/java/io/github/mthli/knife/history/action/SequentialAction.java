@@ -6,8 +6,7 @@ import android.text.Editable;
  * Created by cauchywei on 16/1/9.
  */
 public class SequentialAction implements Action {
-
-    Action[] actions;
+    private Action[] actions;
 
     public SequentialAction(Action ...actions) {
         this.actions = actions;
@@ -28,7 +27,5 @@ public class SequentialAction implements Action {
     }
 
     @Override
-    public void onRemoved() {
-
-    }
+    public void onRemoved() {}
 }

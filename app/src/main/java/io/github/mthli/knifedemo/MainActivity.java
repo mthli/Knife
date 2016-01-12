@@ -256,8 +256,8 @@ public class MainActivity extends Activity {
         undoItem = menu.findItem(R.id.undo);
         redoItem = menu.findItem(R.id.redo);
 
-        setMenuItemEnabled(undoItem,false);
-        setMenuItemEnabled(redoItem,false);
+        setMenuItemEnabled(undoItem, false);
+        setMenuItemEnabled(redoItem, false);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -282,9 +282,8 @@ public class MainActivity extends Activity {
         return true;
     }
 
-
     private void setMenuItemEnabled(MenuItem itemEnable, boolean enabled) {
-        itemEnable.getIcon().setAlpha(enabled?255:127);
+        itemEnable.getIcon().setAlpha(enabled ? 255 : 127);
         itemEnable.setEnabled(enabled);
     }
 }

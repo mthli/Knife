@@ -1,15 +1,12 @@
 package io.github.mthli.knife.history;
 
-import android.os.Parcel;
-import android.text.ParcelableSpan;
-
 /**
  * Created by cauchywei on 16/1/9.
  */
 public class SpanRecord {
-    public Object span;
-    public int start;
-    public int end;
+    private Object span;
+    private int start;
+    private int end;
 
     public SpanRecord(Object span, int start, int end) {
         this.span = span;
@@ -17,9 +14,15 @@ public class SpanRecord {
         this.end = end;
     }
 
-    public void recycle() {
-//        if (spanParcel != null) {
-//            spanParcel.recycle();
-//        }
+    public Object getSpan() {
+        return span;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
     }
 }

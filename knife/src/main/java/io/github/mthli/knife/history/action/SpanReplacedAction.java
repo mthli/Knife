@@ -7,6 +7,6 @@ import io.github.mthli.knife.history.SpanRecord;
  */
 public class SpanReplacedAction extends SequentialAction {
     public SpanReplacedAction(int start, int end, Object spanBefore, Object spanAfter) {
-        super(new SpanRemovedAction(new SpanRecord(spanBefore,start,end)),new SpanAddedAction(new SpanRecord(spanAfter,start,end)));
+        super(new SpanRemovedAction(new SpanRecord(spanBefore, start, end)), new SpanAddedAction(new SpanRecord(spanAfter, start, end)));
     }
 }

@@ -8,13 +8,12 @@ import io.github.mthli.knife.history.action.Action;
  * Created by cauchywei on 16/1/8.
  */
 public class KnifeHistory {
+    public static final int DEFAULT_MAX_CAPACITY = 100;
 
     public interface HistoryStateChangeListener {
         void onUndoEnabledStateChange(boolean enabled);
         void onRedoEnabledStateChange(boolean enabled);
     }
-
-    public static final int DEFAULT_MAX_CAPACITY = 100;
 
     private boolean enabled = true;
     private boolean processing = false;
@@ -22,23 +21,24 @@ public class KnifeHistory {
     private CapacityLimitedStack<Action> undoActionStack = new CapacityLimitedStack<>();
     private CapacityLimitedStack<Action> redoActionStack = new CapacityLimitedStack<>();
 
-
     public void record(Action action) {
         if (enabled && action !=null) {
             if (stateChangeListener != null) {
                 if (!redoActionStack.isEmpty()) {
                     stateChangeListener.onRedoEnabledStateChange(false);
                 }
+
                 if (undoActionStack.isEmpty()) {
                     stateChangeListener.onUndoEnabledStateChange(true);
                 }
             }
+
             redoActionStack.clear();
             undoActionStack.push(action);
         }
     }
-    public void undo(Editable editable){
 
+    public void undo(Editable editable) {
         if (stateChangeListener != null && redoActionStack.isEmpty()) {
             stateChangeListener.onRedoEnabledStateChange(true);
         }
@@ -55,7 +55,6 @@ public class KnifeHistory {
     }
 
     public void redo(Editable editable){
-
         if (stateChangeListener != null && undoActionStack.isEmpty()) {
             stateChangeListener.onUndoEnabledStateChange(true);
         }
@@ -69,8 +68,6 @@ public class KnifeHistory {
         if (stateChangeListener != null  && redoActionStack.isEmpty() ) {
             stateChangeListener.onRedoEnabledStateChange(false);
         }
-
-
     }
 
     public void clear() {
@@ -88,6 +85,7 @@ public class KnifeHistory {
             }
         }
     }
+
     public boolean isEnabled() {
         return enabled;
     }

@@ -1,7 +1,6 @@
 package io.github.mthli.knife.history;
 
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,27 +9,38 @@ import java.util.List;
  * Created by cauchywei on 16/1/9.
  */
 public class TextChangedRecord {
-
-    public CharSequence changedText;
-    public int start;
-    public int length;
-    public List<SpanRecord> spanRecordList;
+    private CharSequence changedText;
+    private int start;
+    private int length;
+    private List<SpanRecord> spanRecordList;
 
     public TextChangedRecord(Editable editable,CharSequence text, int start, int length, Class[] spanClasses) {
-        changedText = text.subSequence(start,start+length);
+        this.changedText = text.subSequence(start, start + length);
         this.start = start;
         this.length = length;
+        this.spanRecordList = new ArrayList<>();
 
-        spanRecordList = new ArrayList<>();
         for (Class spanClass : spanClasses) {
             Object[] spans = editable.getSpans(start, start + length, spanClass);
             for (Object span : spans) {
-                spanRecordList.add(new SpanRecord(span,editable.getSpanStart(span),editable.getSpanEnd(span)));
+                spanRecordList.add(new SpanRecord(span, editable.getSpanStart(span), editable.getSpanEnd(span)));
             }
         }
     }
 
     public CharSequence getChangedText() {
         return changedText;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public List<SpanRecord> getSpanRecordList() {
+        return spanRecordList;
     }
 }

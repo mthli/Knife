@@ -2,7 +2,6 @@ package io.github.mthli.knife.history.action;
 
 import android.text.Editable;
 import android.text.Spanned;
-import android.util.Log;
 
 import io.github.mthli.knife.history.SpanRecord;
 import io.github.mthli.knife.history.TextChangedRecord;
@@ -11,9 +10,8 @@ import io.github.mthli.knife.history.TextChangedRecord;
  * Created by cauchywei on 16/1/9.
  */
 public class TextChangedAction implements Action {
-
-    TextChangedRecord before;
-    TextChangedRecord after;
+    private TextChangedRecord before;
+    private TextChangedRecord after;
 
     public TextChangedAction(TextChangedRecord before, TextChangedRecord after) {
         this.before = before;
@@ -22,21 +20,20 @@ public class TextChangedAction implements Action {
 
     @Override
     public void undo(Editable editable) {
-        editable.replace(after.start,after.start+after.changedText.length(),before.getChangedText());
-        for (SpanRecord beforeSpanRecord : before.spanRecordList) {
-            editable.setSpan(beforeSpanRecord.span,beforeSpanRecord.start,beforeSpanRecord.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        editable.replace(after.getStart(), after.getStart() + after.getChangedText().length(), before.getChangedText());
+        for (SpanRecord beforeSpanRecord : before.getSpanRecordList()) {
+            editable.setSpan(beforeSpanRecord.getSpan(), beforeSpanRecord.getStart(), beforeSpanRecord.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
 
     @Override
     public void redo(Editable editable) {
-        editable.replace(before.start,before.start+before.changedText.length(),after.getChangedText());
-        for (SpanRecord afterSpan : after.spanRecordList) {
-            editable.setSpan(afterSpan.span,afterSpan.start,afterSpan.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        editable.replace(before.getStart(), before.getStart() + before.getChangedText().length(), after.getChangedText());
+        for (SpanRecord afterSpan : after.getSpanRecordList()) {
+            editable.setSpan(afterSpan.getSpan(), afterSpan.getStart(), afterSpan.getEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
 
     @Override
-    public void onRemoved() {
-    }
+    public void onRemoved() {}
 }
