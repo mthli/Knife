@@ -34,5 +34,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile 'org.mockito:mockito-core:1.9.5'
+    testCompile 'junit:junit:4.12'
 }

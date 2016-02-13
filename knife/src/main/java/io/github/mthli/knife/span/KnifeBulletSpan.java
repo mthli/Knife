@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.mthli.knife;
+package io.github.mthli.knife.span;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -90,5 +90,25 @@ public class KnifeBulletSpan extends BulletSpan {
             p.setColor(oldColor);
             p.setStyle(style);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        KnifeBulletSpan that = (KnifeBulletSpan) o;
+
+        return bulletColor == that.bulletColor && bulletRadius ==
+                that.bulletRadius && bulletGapWidth == that.bulletGapWidth;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = bulletColor;
+        result = 31 * result + bulletRadius;
+        result = 31 * result + bulletGapWidth;
+        return result;
     }
 }

@@ -38,6 +38,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.github.mthli.knife.span.KnifeBulletSpan;
+import io.github.mthli.knife.span.KnifeQuoteSpan;
+import io.github.mthli.knife.span.KnifeURLSpan;
+
 public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BOLD = 0x01;
     public static final int FORMAT_ITALIC = 0x02;

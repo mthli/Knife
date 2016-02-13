@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.mthli.knife;
+package io.github.mthli.knife.span;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -71,5 +71,25 @@ public class KnifeQuoteSpan extends QuoteSpan {
 
         p.setStyle(style);
         p.setColor(color);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        KnifeQuoteSpan that = (KnifeQuoteSpan) o;
+
+        return quoteColor == that.quoteColor && quoteStripeWidth ==
+                that.quoteStripeWidth && quoteGapWidth == that.quoteGapWidth;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = quoteColor;
+        result = 31 * result + quoteStripeWidth;
+        result = 31 * result + quoteGapWidth;
+        return result;
     }
 }
