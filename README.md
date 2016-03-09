@@ -13,9 +13,9 @@ Support Android 4.0+
 
 ![example.gif](./example.gif "example.gif")
 
-Here has a [demo apk](https://github.com/mthli/Knife/releases/download/v1.1/KnifeDemo.1.1.apk "KnifeDemo.1.1.apk"), and it's [source code](https://github.com/mthli/Knife/tree/master/app "KnifeDemo.1.1.apk's source code"), very easy to understand~
+Here is a [demo apk](https://github.com/mthli/Knife/releases/download/v1.1/KnifeDemo.1.1.apk "KnifeDemo.1.1.apk"), and its [source code](https://github.com/mthli/Knife/tree/master/app "KnifeDemo.1.1.apk's source code"), very easy to understand~
 
-## Api
+## APIs
 
  - `bold(boolean valid)` __bold__ the selected text.
  
@@ -45,7 +45,7 @@ Here has a [demo apk](https://github.com/mthli/Knife/releases/download/v1.1/Knif
  
 If you want to get more control of the editable text, just extend KnifeText to get all protected method.
 
-#### Custom
+#### Customize
 
  - `app:bulletColor`
  
@@ -71,16 +71,16 @@ If you want to get more control of the editable text, just extend KnifeText to g
 
  - Insert image.
 
-## Gradle
+## Gradle Usage
 
-At your top-level `build.gradle` file:
+In your top-level `build.gradle` file:
 
     repositories {
         // ...
         maven { url 'https://jitpack.io' }
     }
     
-And then at your project `build.gradle` file:
+And then in your app module's `build.gradle` file:
 
     dependencies {
         compile 'com.github.mthli:Knife:v1.1'
