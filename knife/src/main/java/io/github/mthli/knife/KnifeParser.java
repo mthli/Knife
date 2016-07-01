@@ -174,6 +174,10 @@ public class KnifeParser {
                     out.append("<del>");
                 }
 
+                if (spans[j] instanceof UnknownHtmlSpan) {
+                    out.append(((UnknownHtmlSpan)spans[j]).getSource());
+                }
+
                 if (spans[j] instanceof URLSpan) {
                     out.append("<a href=\"");
                     out.append(((URLSpan) spans[j]).getURL());

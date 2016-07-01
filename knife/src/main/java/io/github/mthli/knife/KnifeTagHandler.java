@@ -29,14 +29,19 @@ import android.text.style.StrikethroughSpan;
 
 import org.xml.sax.XMLReader;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class KnifeTagHandler implements Html.TagHandler {
     private static final String BULLET_LI = "li";
     private static final String STRIKETHROUGH_S = "s";
     private static final String STRIKETHROUGH_STRIKE = "strike";
     private static final String STRIKETHROUGH_DEL = "del";
+    private static final List<String> KNOWN_TAGS = Arrays.asList("html", "body", "ul");
 
     private static class Li {}
     private static class Strike {}
+    private static class Unknown {}
 
     @Override
     public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
@@ -48,6 +53,8 @@ public class KnifeTagHandler implements Html.TagHandler {
                 start(output, new Li());
             } else if (tag.equalsIgnoreCase(STRIKETHROUGH_S) || tag.equalsIgnoreCase(STRIKETHROUGH_STRIKE) || tag.equalsIgnoreCase(STRIKETHROUGH_DEL)) {
                 start(output, new Strike());
+            } else if (!KNOWN_TAGS.contains(tag)){
+                start(output, new Unknown());
             }
         } else {
             if (tag.equalsIgnoreCase(BULLET_LI)) {
@@ -57,6 +64,8 @@ public class KnifeTagHandler implements Html.TagHandler {
                 end(output, Li.class, new BulletSpan());
             } else if (tag.equalsIgnoreCase(STRIKETHROUGH_S) || tag.equalsIgnoreCase(STRIKETHROUGH_STRIKE) || tag.equalsIgnoreCase(STRIKETHROUGH_DEL)) {
                 end(output, Strike.class, new StrikethroughSpan());
+            } else if (!KNOWN_TAGS.contains(tag)) {
+                end(output, Unknown.class, new UnknownHtmlSpan(tag));
             }
         }
     }

@@ -24,7 +24,8 @@ public class MainActivity extends Activity {
     private static final String BULLET = "<ul><li>asdfg</li></ul>";
     private static final String QUOTE = "<blockquote>Quote</blockquote>";
     private static final String LINK = "<a href=\"https://github.com/mthli/Knife\">Link</a><br><br>";
-    private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK;
+    private static final String BLINK = "<blink><a href=\"https://github.com/mthli/Knife\">Link</a></blink>";
+    private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK + BLINK;
 
     private KnifeText knife;
 
@@ -46,6 +47,7 @@ public class MainActivity extends Activity {
         setupQuote();
         setupLink();
         setupClear();
+        setupHtml();
     }
 
     private void setupBold() {
@@ -201,6 +203,25 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void setupHtml() {
+        ImageButton clear = (ImageButton) findViewById(R.id.html);
+
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                knife.setText(knife.toHtml());
+            }
+        });
+
+        clear.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(MainActivity.this, R.string.toast_html, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+    }
+
     private void showLinkDialog() {
         final int start = knife.getSelectionStart();
         final int end = knife.getSelectionEnd();
@@ -222,7 +243,7 @@ public class MainActivity extends Activity {
                 }
 
                 // When KnifeText lose focus, use this method
-                knife.link(link, start, end);
+                knife. link(link, start, end);
             }
         });
 
