@@ -16,7 +16,6 @@
 
 package io.github.mthli.knife;
 
-import android.graphics.Color;
 import org.ccil.cowan.tagsoup.HTMLSchema;
 import org.ccil.cowan.tagsoup.Parser;
 import org.xml.sax.Attributes;
@@ -38,6 +37,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
+import android.text.style.BulletSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
@@ -55,7 +55,9 @@ import android.text.style.UnderlineSpan;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class processes HTML strings into displayable styled text.
@@ -88,7 +90,7 @@ public class Html {
          * a tag that it does not know how to interpret.
          */
         public void handleTag(boolean opening, String tag,
-                              Editable output, XMLReader xmlReader);
+                              Editable output, Attributes attributes);
     }
 
     private Html() { }
@@ -412,11 +414,16 @@ class HtmlToSpannedConverter implements ContentHandler {
             1.5f, 1.4f, 1.3f, 1.2f, 1.1f, 1f,
     };
 
+    private static final List<String> KNOWN_TAGS = Arrays.asList("html", "body", "ul");
+
     private String mSource;
     private XMLReader mReader;
     private SpannableStringBuilder mSpannableStringBuilder;
+    private SpannableStringBuilder mOldSpannableStringBuilder;
     private Html.ImageGetter mImageGetter;
     private Html.TagHandler mTagHandler;
+    private Attributes mAttributes;
+    private String mUnknownTag;
 
     public HtmlToSpannedConverter(
             String source, Html.ImageGetter imageGetter, Html.TagHandler tagHandler,
@@ -534,8 +541,17 @@ class HtmlToSpannedConverter implements ContentHandler {
             start(mSpannableStringBuilder, new Header(tag.charAt(1) - '1'));
         } else if (tag.equalsIgnoreCase("img")) {
             startImg(mSpannableStringBuilder, attributes, mImageGetter);
-        } else if (mTagHandler != null) {
-            mTagHandler.handleTag(true, tag, mSpannableStringBuilder, mReader);
+        } else if (tag.equalsIgnoreCase("li")) {
+            startLi(mSpannableStringBuilder);
+        } else if (tag.equalsIgnoreCase("s") || tag.equalsIgnoreCase("strike") || tag.equalsIgnoreCase("del")) {
+            start(mSpannableStringBuilder, new Strike());
+        } else if (!KNOWN_TAGS.contains(tag.toLowerCase())) {
+            // TODO: handle multiple embedded unknown tags
+            start(mSpannableStringBuilder, new Unknown());
+            mOldSpannableStringBuilder = mSpannableStringBuilder;
+            mSpannableStringBuilder = new SpannableStringBuilder();
+            mAttributes = attributes;
+            mUnknownTag = tag;
         }
     }
 
@@ -578,13 +594,20 @@ class HtmlToSpannedConverter implements ContentHandler {
             end(mSpannableStringBuilder, Super.class, new SuperscriptSpan());
         } else if (tag.equalsIgnoreCase("sub")) {
             end(mSpannableStringBuilder, Sub.class, new SubscriptSpan());
+        } else if (tag.equalsIgnoreCase("li")) {
+            endLi(mSpannableStringBuilder);
+        } else if (tag.equalsIgnoreCase("s") || tag.equalsIgnoreCase("strike") || tag.equalsIgnoreCase("del")) {
+            end(mSpannableStringBuilder, Strike.class, new StrikethroughSpan());
         } else if (tag.length() == 2 &&
                 Character.toLowerCase(tag.charAt(0)) == 'h' &&
                 tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
             handleP(mSpannableStringBuilder);
             endHeader(mSpannableStringBuilder);
-        } else if (mTagHandler != null) {
-            mTagHandler.handleTag(false, tag, mSpannableStringBuilder, mReader);
+        } else if (tag.equalsIgnoreCase(mUnknownTag)) {
+            mOldSpannableStringBuilder.append("Unknown");
+            end(mOldSpannableStringBuilder, Unknown.class, new UnknownHtmlSpan(tag, mAttributes, mSpannableStringBuilder));
+            mUnknownTag = null;
+            mSpannableStringBuilder = mOldSpannableStringBuilder;
         }
     }
 
@@ -639,6 +662,13 @@ class HtmlToSpannedConverter implements ContentHandler {
         if (where != len) {
             text.setSpan(repl, where, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+    }
+
+    private static void startLi(SpannableStringBuilder text) {
+        if (text.length() > 0 && text.charAt(text.length() - 1) != '\n') {
+            text.append("\n");
+        }
+        start(text, new Li());
     }
 
     private static void startImg(SpannableStringBuilder text,
@@ -773,21 +803,28 @@ class HtmlToSpannedConverter implements ContentHandler {
         text.setSpan(new Href(href), len, len, Spannable.SPAN_MARK_MARK);
     }
 
-    private static void endA(SpannableStringBuilder text) {
-        int len = text.length();
-        Object obj = getLast(text, Href.class);
-        int where = text.getSpanStart(obj);
+    private static void endA(SpannableStringBuilder output) {
+        int len = output.length();
+        Object obj = getLast(output, Href.class);
+        int where = output.getSpanStart(obj);
 
-        text.removeSpan(obj);
+        output.removeSpan(obj);
 
         if (where != len) {
             Href h = (Href) obj;
 
             if (h.mHref != null) {
-                text.setSpan(new URLSpan(h.mHref), where, len,
+                output.setSpan(new URLSpan(h.mHref), where, len,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
+    }
+
+    private static void endLi(SpannableStringBuilder output) {
+        if (output.length() > 0 && output.charAt(output.length() - 1) != '\n') {
+            output.append("\n");
+        }
+        end(output, Li.class, new BulletSpan());
     }
 
     private static void endHeader(SpannableStringBuilder text) {
@@ -893,6 +930,9 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static class Blockquote { }
     private static class Super { }
     private static class Sub { }
+    private static class Li { }
+    private static class Strike { }
+    private static class Unknown { }
 
     private static class Font {
         public String mColor;

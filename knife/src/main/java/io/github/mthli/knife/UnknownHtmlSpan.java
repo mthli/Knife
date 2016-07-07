@@ -2,27 +2,32 @@ package io.github.mthli.knife;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.text.Spanned;
 import android.text.style.ParagraphStyle;
 import android.text.style.ReplacementSpan;
+
+import org.xml.sax.Attributes;
 
 /**
  * Created by Onko on 7/1/2016.
  */
 
-public class UnknownHtmlSpan extends ReplacementSpan implements ParagraphStyle {
+public class UnknownHtmlSpan extends ReplacementSpan {
 
     private String tag;
-    private CharSequence text;
+    private Attributes attributes;
+    private Spanned spanned;
     private int width;
 
-    public UnknownHtmlSpan(String tag) {
+    public UnknownHtmlSpan(String tag, Attributes attributes, Spanned spanned) {
         this.tag = tag;
+        this.attributes = attributes;
+        this.spanned = spanned;
     }
 
     @Override
     public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
         //return text with relative to the Paint
-        this.text = text.subSequence(start, end);
         width = (int) paint.measureText(text, start, end);
         return width;
     }
@@ -34,6 +39,9 @@ public class UnknownHtmlSpan extends ReplacementSpan implements ParagraphStyle {
     }
 
     public String getSource() {
-        return "<" + tag + ">" + text + "</" + tag + ">";
+        if (attributes.getLength() != 0) {
+            // TODO: add attributes back
+        }
+        return "<" + tag + ">" + KnifeParser.toHtml(spanned) + "</" + tag + ">";
     }
 }

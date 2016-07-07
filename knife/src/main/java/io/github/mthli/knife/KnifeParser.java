@@ -32,7 +32,7 @@ import android.text.style.UnderlineSpan;
 
 public class KnifeParser {
     public static Spanned fromHtml(String source) {
-        return Html.fromHtml(source, null, new KnifeTagHandler());
+        return Html.fromHtml(source);
     }
 
     public static String toHtml(Spanned text) {
@@ -194,6 +194,7 @@ public class KnifeParser {
             }
 
             withinStyle(out, text, i, next);
+
             for (int j = spans.length - 1; j >= 0; j--) {
                 if (spans[j] instanceof URLSpan) {
                     out.append("</a>");
@@ -227,6 +228,9 @@ public class KnifeParser {
     }
 
     private static void withinStyle(StringBuilder out, CharSequence text, int start, int end) {
+        if (text.subSequence(start, end).toString().equals("Unknown"))
+            return;
+
         for (int i = start; i < end; i++) {
             char c = text.charAt(i);
 
