@@ -21,7 +21,6 @@
 package io.github.mthli.knife;
 
 import android.text.Editable;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.style.BulletSpan;
