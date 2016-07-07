@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import io.github.mthli.knife.KnifeText;
+import io.github.mthli.knife.history.KnifeHistory;
 
 public class MainActivity extends Activity {
     private static final String BOLD = "<b>Bold</b><br><br>";
@@ -28,6 +29,8 @@ public class MainActivity extends Activity {
     private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK + BLINK;
 
     private KnifeText knife;
+    private MenuItem undoItem;
+    private MenuItem redoItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,17 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         knife = (KnifeText) findViewById(R.id.knife);
+        knife.setHistoryStateChangeListener(new KnifeHistory.HistoryStateChangeListener() {
+            @Override
+            public void onUndoEnabledStateChange(boolean enabled) {
+               setMenuItemEnabled(undoItem,enabled);
+            }
+
+            @Override
+            public void onRedoEnabledStateChange(boolean enabled) {
+                setMenuItemEnabled(redoItem,enabled);
+            }
+        });
         // ImageGetter coming soon...
         knife.fromHtml(EXAMPLE);
         knife.setSelection(knife.getEditableText().length());
@@ -260,6 +274,12 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        undoItem = menu.findItem(R.id.undo);
+        redoItem = menu.findItem(R.id.redo);
+
+        setMenuItemEnabled(undoItem, false);
+        setMenuItemEnabled(redoItem, false);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -281,5 +301,10 @@ public class MainActivity extends Activity {
         }
 
         return true;
+    }
+
+    private void setMenuItemEnabled(MenuItem itemEnable, boolean enabled) {
+        itemEnable.getIcon().setAlpha(enabled ? 255 : 127);
+        itemEnable.setEnabled(enabled);
     }
 }
