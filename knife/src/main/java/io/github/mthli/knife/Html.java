@@ -58,6 +58,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * This class processes HTML strings into displayable styled text.
@@ -404,15 +405,17 @@ class HtmlToSpannedConverter implements ContentHandler {
     private String mSource;
     private XMLReader mReader;
     private SpannableStringBuilder mSpannableStringBuilder;
-    private SpannableStringBuilder mOldSpannableStringBuilder;
+    private Stack<SpannableStringBuilder> mSpannedStack;
+    private Stack<String> mTagStack;
     private Html.ImageGetter mImageGetter;
     private Attributes mAttributes;
-    private String mUnknownTag;
 
     public HtmlToSpannedConverter(
             String source, Html.ImageGetter imageGetter, Parser parser) {
         mSource = source;
         mSpannableStringBuilder = new SpannableStringBuilder();
+        mSpannedStack = new Stack<>();
+        mTagStack = new Stack<>();
         mImageGetter = imageGetter;
         mReader = parser;
     }
@@ -430,6 +433,12 @@ class HtmlToSpannedConverter implements ContentHandler {
             throw new RuntimeException(e);
         }
 
+        fixSpanRanges();
+
+        return mSpannableStringBuilder;
+    }
+
+    private void fixSpanRanges() {
         // Fix flags and range for paragraph-type markup.
         Object[] obj = mSpannableStringBuilder.getSpans(0, mSpannableStringBuilder.length(), ParagraphStyle.class);
         for (int i = 0; i < obj.length; i++) {
@@ -450,8 +459,6 @@ class HtmlToSpannedConverter implements ContentHandler {
                 mSpannableStringBuilder.setSpan(obj[i], start, end, Spannable.SPAN_PARAGRAPH);
             }
         }
-
-        return mSpannableStringBuilder;
     }
 
     private static HashMap<String, Integer> COLORS = buildColorMap();
@@ -528,12 +535,14 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("s") || tag.equalsIgnoreCase("strike") || tag.equalsIgnoreCase("del")) {
             start(mSpannableStringBuilder, new Strike());
         } else if (!KNOWN_TAGS.contains(tag.toLowerCase())) {
-            // TODO: handle multiple embedded unknown tags
+//            if (mTagStack.empty()) {
+                handleP(mSpannableStringBuilder);
+//            }
             start(mSpannableStringBuilder, new Unknown());
-            mOldSpannableStringBuilder = mSpannableStringBuilder;
+            mSpannedStack.push(mSpannableStringBuilder);
+            mTagStack.push(tag);
             mSpannableStringBuilder = new SpannableStringBuilder();
             mAttributes = attributes;
-            mUnknownTag = tag;
         }
     }
 
@@ -585,11 +594,14 @@ class HtmlToSpannedConverter implements ContentHandler {
                 tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
             handleP(mSpannableStringBuilder);
             endHeader(mSpannableStringBuilder);
-        } else if (tag.equalsIgnoreCase(mUnknownTag)) {
-            mOldSpannableStringBuilder.append("Unknown");
-            end(mOldSpannableStringBuilder, Unknown.class, new UnknownHtmlSpan(tag, mAttributes, mSpannableStringBuilder));
-            mUnknownTag = null;
-            mSpannableStringBuilder = mOldSpannableStringBuilder;
+        } else if (!mTagStack.empty() && tag.equalsIgnoreCase(mTagStack.peek())) {
+            mSpannedStack.peek().append(UnknownHtmlSpan.TEXT);
+            handleP(mSpannedStack.peek());
+            end(mSpannedStack.peek(), Unknown.class, new UnknownHtmlSpan(tag, mAttributes, mSpannableStringBuilder));
+
+            fixSpanRanges();
+            mTagStack.pop();
+            mSpannableStringBuilder = mSpannedStack.pop();
         }
     }
 

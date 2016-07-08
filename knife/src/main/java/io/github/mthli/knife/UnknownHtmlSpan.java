@@ -12,7 +12,9 @@ import org.xml.sax.Attributes;
  * Created by Onko on 7/1/2016.
  */
 
-public class UnknownHtmlSpan extends ReplacementSpan {
+public class UnknownHtmlSpan extends ReplacementSpan implements ParagraphStyle {
+
+    public static final String TEXT = "Unknown";
 
     private String tag;
     private Attributes attributes;
@@ -38,10 +40,22 @@ public class UnknownHtmlSpan extends ReplacementSpan {
         canvas.drawRect(x, top, x + width, bottom, paint);
     }
 
-    public String getSource() {
+    public Spanned getContent() {
+        return spanned;
+    }
+
+    public String getStartTag() {
         if (attributes.getLength() != 0) {
             // TODO: add attributes back
         }
-        return "<" + tag + ">" + KnifeParser.toHtml(spanned) + "</" + tag + ">";
+        return "<" + tag + ">";
+    }
+
+    public String getEndTag() {
+        return "</" + tag + ">";
+    }
+
+    public String getTagName() {
+        return tag;
     }
 }

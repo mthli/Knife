@@ -62,6 +62,8 @@ public class KnifeParser {
                     withinBullet(out, text, i, next++);
                 } else if (styles[0] instanceof QuoteSpan) {
                     withinQuote(out, text, i, next++);
+                } else if (styles[0] instanceof UnknownHtmlSpan) {
+                    withinUnknown((UnknownHtmlSpan)styles[0], out);
                 } else {
                     withinContent(out, text, i, next);
                 }
@@ -69,6 +71,12 @@ public class KnifeParser {
                 withinContent(out, text, i, next);
             }
         }
+    }
+
+    private static void withinUnknown(UnknownHtmlSpan span, StringBuilder out) {
+        out.append(span.getStartTag());
+        withinHtml(out, span.getContent());
+        out.append(span.getEndTag());
     }
 
     private static void withinBulletThenQuote(StringBuilder out, Spanned text, int start, int end) {
@@ -174,7 +182,7 @@ public class KnifeParser {
                 }
 
                 if (spans[j] instanceof UnknownHtmlSpan) {
-                    out.append(((UnknownHtmlSpan)spans[j]).getSource());
+                    out.append(((UnknownHtmlSpan)spans[j]).getContent());
                 }
 
                 if (spans[j] instanceof URLSpan) {
@@ -228,7 +236,7 @@ public class KnifeParser {
     }
 
     private static void withinStyle(StringBuilder out, CharSequence text, int start, int end) {
-        if (text.subSequence(start, end).toString().equals("Unknown"))
+        if (text.subSequence(start, end).toString().equals(UnknownHtmlSpan.TEXT))
             return;
 
         for (int i = start; i < end; i++) {
