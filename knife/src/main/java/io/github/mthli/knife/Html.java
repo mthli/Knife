@@ -80,19 +80,6 @@ public class Html {
         public Drawable getDrawable(String source);
     }
 
-    /**
-     * Is notified when HTML tags are encountered that the parser does
-     * not know how to interpret.
-     */
-    public static interface TagHandler {
-        /**
-         * This method will be called whenn the HTML parser encounters
-         * a tag that it does not know how to interpret.
-         */
-        public void handleTag(boolean opening, String tag,
-                              Editable output, Attributes attributes);
-    }
-
     private Html() { }
 
     /**
@@ -104,7 +91,7 @@ public class Html {
      * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
      */
     public static Spanned fromHtml(String source) {
-        return fromHtml(source, null, null);
+        return fromHtml(source, null);
     }
 
     /**
@@ -125,8 +112,7 @@ public class Html {
      *
      * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
      */
-    public static Spanned fromHtml(String source, ImageGetter imageGetter,
-                                   TagHandler tagHandler) {
+    public static Spanned fromHtml(String source, ImageGetter imageGetter) {
         Parser parser = new Parser();
         try {
             parser.setProperty(Parser.schemaProperty, HtmlParser.schema);
@@ -139,8 +125,7 @@ public class Html {
         }
 
         HtmlToSpannedConverter converter =
-                new HtmlToSpannedConverter(source, imageGetter, tagHandler,
-                        parser);
+                new HtmlToSpannedConverter(source, imageGetter, parser);
         return converter.convert();
     }
 
@@ -421,17 +406,14 @@ class HtmlToSpannedConverter implements ContentHandler {
     private SpannableStringBuilder mSpannableStringBuilder;
     private SpannableStringBuilder mOldSpannableStringBuilder;
     private Html.ImageGetter mImageGetter;
-    private Html.TagHandler mTagHandler;
     private Attributes mAttributes;
     private String mUnknownTag;
 
     public HtmlToSpannedConverter(
-            String source, Html.ImageGetter imageGetter, Html.TagHandler tagHandler,
-            Parser parser) {
+            String source, Html.ImageGetter imageGetter, Parser parser) {
         mSource = source;
         mSpannableStringBuilder = new SpannableStringBuilder();
         mImageGetter = imageGetter;
-        mTagHandler = tagHandler;
         mReader = parser;
     }
 
