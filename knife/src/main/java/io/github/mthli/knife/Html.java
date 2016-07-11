@@ -29,7 +29,6 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.text.Editable;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -233,7 +232,7 @@ public class Html {
     }
 
     /* Returns true if the caller should close and reopen the paragraph. */
-    private static boolean withinParagraph(StringBuilder out, Spanned text,
+    public static boolean withinParagraph(StringBuilder out, Spanned text,
                                            int start, int end, int nl,
                                            boolean last) {
         int next;
@@ -357,8 +356,11 @@ public class Html {
         }
     }
 
-    private static void withinStyle(StringBuilder out, CharSequence text,
+    public static void withinStyle(StringBuilder out, CharSequence text,
                                     int start, int end) {
+        if (text.subSequence(start, end).toString().equals(UnknownHtmlSpan.TEXT))
+            return;
+
         for (int i = start; i < end; i++) {
             char c = text.charAt(i);
 
@@ -405,17 +407,14 @@ class HtmlToSpannedConverter implements ContentHandler {
     private String mSource;
     private XMLReader mReader;
     private SpannableStringBuilder mSpannableStringBuilder;
-    private Stack<SpannableStringBuilder> mSpannedStack;
-    private Stack<String> mTagStack;
+    private Stack<Unknown> mUknownStack;
     private Html.ImageGetter mImageGetter;
-    private Attributes mAttributes;
 
     public HtmlToSpannedConverter(
             String source, Html.ImageGetter imageGetter, Parser parser) {
         mSource = source;
         mSpannableStringBuilder = new SpannableStringBuilder();
-        mSpannedStack = new Stack<>();
-        mTagStack = new Stack<>();
+        mUknownStack = new Stack<>();
         mImageGetter = imageGetter;
         mReader = parser;
     }
@@ -535,14 +534,11 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("s") || tag.equalsIgnoreCase("strike") || tag.equalsIgnoreCase("del")) {
             start(mSpannableStringBuilder, new Strike());
         } else if (!KNOWN_TAGS.contains(tag.toLowerCase())) {
-//            if (mTagStack.empty()) {
-                handleP(mSpannableStringBuilder);
-//            }
-            start(mSpannableStringBuilder, new Unknown());
-            mSpannedStack.push(mSpannableStringBuilder);
-            mTagStack.push(tag);
+            handleP(mSpannableStringBuilder);
+            Unknown unknown = new Unknown(mSpannableStringBuilder, tag, attributes);
+            start(mSpannableStringBuilder, unknown);
+            mUknownStack.push(unknown);
             mSpannableStringBuilder = new SpannableStringBuilder();
-            mAttributes = attributes;
         }
     }
 
@@ -594,14 +590,14 @@ class HtmlToSpannedConverter implements ContentHandler {
                 tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
             handleP(mSpannableStringBuilder);
             endHeader(mSpannableStringBuilder);
-        } else if (!mTagStack.empty() && tag.equalsIgnoreCase(mTagStack.peek())) {
-            mSpannedStack.peek().append(UnknownHtmlSpan.TEXT);
-            handleP(mSpannedStack.peek());
-            end(mSpannedStack.peek(), Unknown.class, new UnknownHtmlSpan(tag, mAttributes, mSpannableStringBuilder));
+        } else if (!mUknownStack.empty() && tag.equalsIgnoreCase(mUknownStack.peek().tag)) {
+            Unknown unknown = mUknownStack.pop();
+            unknown.spanned.append(UnknownHtmlSpan.TEXT);
+            handleP(unknown.spanned);
+            end(unknown.spanned, Unknown.class, new UnknownHtmlSpan(tag, unknown.attributes, mSpannableStringBuilder));
 
             fixSpanRanges();
-            mTagStack.pop();
-            mSpannableStringBuilder = mSpannedStack.pop();
+            mSpannableStringBuilder = unknown.spanned;
         }
     }
 
@@ -926,7 +922,18 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static class Sub { }
     private static class Li { }
     private static class Strike { }
-    private static class Unknown { }
+    private static class Unknown {
+
+        SpannableStringBuilder spanned;
+        String tag;
+        Attributes attributes;
+
+        public Unknown(SpannableStringBuilder sb, String tag, Attributes attributes) {
+            this.spanned = sb;
+            this.tag = tag;
+            this.attributes = attributes;
+        }
+    }
 
     private static class Font {
         public String mColor;

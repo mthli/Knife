@@ -45,10 +45,13 @@ public class UnknownHtmlSpan extends ReplacementSpan implements ParagraphStyle {
     }
 
     public String getStartTag() {
-        if (attributes.getLength() != 0) {
-            // TODO: add attributes back
+        String startTag = "<" + tag;
+        if (attributes.getLength() > 0) {
+            for (int i = 0; i < attributes.getLength(); i++) {
+                startTag += " " + attributes.getLocalName(i) + "=\"" + attributes.getValue(i) + "\"";
+            }
         }
-        return "<" + tag + ">";
+        return startTag + ">";
     }
 
     public String getEndTag() {
