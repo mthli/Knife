@@ -153,57 +153,112 @@ public class Html {
     }
 
     private static void withinHtml(StringBuilder out, Spanned text) {
-        int len = text.length();
-
         int next;
+
         for (int i = 0; i < text.length(); i = next) {
-            next = text.nextSpanTransition(i, len, ParagraphStyle.class);
-            ParagraphStyle[] style = text.getSpans(i, next, ParagraphStyle.class);
-            String elements = " ";
-            boolean needDiv = false;
+            next = text.nextSpanTransition(i, text.length(), ParagraphStyle.class);
 
-            for(int j = 0; j < style.length; j++) {
-                if (style[j] instanceof AlignmentSpan) {
-                    Layout.Alignment align =
-                            ((AlignmentSpan) style[j]).getAlignment();
-                    needDiv = true;
-                    if (align == Layout.Alignment.ALIGN_CENTER) {
-                        elements = "align=\"center\" " + elements;
-                    } else if (align == Layout.Alignment.ALIGN_OPPOSITE) {
-                        elements = "align=\"right\" " + elements;
-                    } else {
-                        elements = "align=\"left\" " + elements;
-                    }
+            ParagraphStyle[] styles = text.getSpans(i, next, ParagraphStyle.class);
+            if (styles.length == 2) {
+                if (styles[0] instanceof BulletSpan && styles[1] instanceof QuoteSpan) {
+                    // Let a <br> follow the BulletSpan or QuoteSpan end, so next++
+                    withinBulletThenQuote(out, text, i, next++);
+                } else if (styles[0] instanceof QuoteSpan && styles[1] instanceof BulletSpan) {
+                    withinQuoteThenBullet(out, text, i, next++);
+                } else {
+                    withinContent(out, text, i, next);
                 }
-            }
-            if (needDiv) {
-                out.append("<div ").append(elements).append(">");
-            }
-
-            withinDiv(out, text, i, next);
-
-            if (needDiv) {
-                out.append("</div>");
+            } else if (styles.length == 1) {
+                if (styles[0] instanceof BulletSpan) {
+                    withinBullet(out, text, i, next++);
+                } else if (styles[0] instanceof QuoteSpan) {
+                    withinQuote(out, text, i, next++);
+                } else if (styles[0] instanceof UnknownHtmlSpan) {
+                    withinUnknown((UnknownHtmlSpan)styles[0], out);
+                } else {
+                    withinContent(out, text, i, next);
+                }
+            } else {
+                withinContent(out, text, i, next);
             }
         }
     }
 
-    private static void withinDiv(StringBuilder out, Spanned text,
-                                  int start, int end) {
+    private static void withinUnknown(UnknownHtmlSpan span, StringBuilder out) {
+        out.append(span.getStartTag());
+        withinHtml(out, span.getContent());
+        out.append(span.getEndTag());
+    }
+
+    private static void withinBulletThenQuote(StringBuilder out, Spanned text, int start, int end) {
+        out.append("<ul><li>");
+        withinQuote(out, text, start, end);
+        out.append("</li></ul>");
+    }
+
+    private static void withinQuoteThenBullet(StringBuilder out, Spanned text, int start, int end) {
+        out.append("<blockquote>");
+        withinBullet(out, text, start, end);
+        out.append("</blockquote>");
+    }
+
+    private static void withinBullet(StringBuilder out, Spanned text, int start, int end) {
+        out.append("<ul>");
+
         int next;
+
+        for (int i = start; i < end; i = next) {
+            next = text.nextSpanTransition(i, end, BulletSpan.class);
+
+            BulletSpan[] spans = text.getSpans(i, next, BulletSpan.class);
+            for (BulletSpan span : spans) {
+                out.append("<li>");
+            }
+
+            withinContent(out, text, i, next);
+            for (BulletSpan span : spans) {
+                out.append("</li>");
+            }
+        }
+
+        out.append("</ul>");
+    }
+
+    private static void withinQuote(StringBuilder out, Spanned text, int start, int end) {
+        int next;
+
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, QuoteSpan.class);
-            QuoteSpan[] quotes = text.getSpans(i, next, QuoteSpan.class);
 
+            QuoteSpan[] quotes = text.getSpans(i, next, QuoteSpan.class);
             for (QuoteSpan quote : quotes) {
                 out.append("<blockquote>");
             }
 
-            withinBlockquote(out, text, i, next);
+            withinContent(out, text, i, next);
 
             for (QuoteSpan quote : quotes) {
-                out.append("</blockquote>\n");
+                out.append("</blockquote>");
             }
+        }
+    }
+
+    private static void withinContent(StringBuilder out, Spanned text, int start, int end) {
+        int next;
+
+        for (int i = start; i < end; i = next) {
+            next = TextUtils.indexOf(text, '\n', i, end);
+            if (next < 0) {
+                next = end;
+            }
+
+            int nl = 0;
+            while (next < end && text.charAt(next) == '\n') {
+                next++;
+                nl++;
+            }
+
+            withinParagraph(out, text, i, next - nl, nl);
         }
     }
 
@@ -225,138 +280,102 @@ public class Html {
                 next++;
             }
 
-            withinParagraph(out, text, i, next - nl, nl, next == end);
+            withinParagraph(out, text, i, next - nl, nl);
         }
 
         out.append("</p>\n");
     }
 
-    /* Returns true if the caller should close and reopen the paragraph. */
-    public static boolean withinParagraph(StringBuilder out, Spanned text,
-                                           int start, int end, int nl,
-                                           boolean last) {
+    private static void withinParagraph(StringBuilder out, Spanned text, int start, int end, int nl) {
         int next;
+
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, CharacterStyle.class);
-            CharacterStyle[] style = text.getSpans(i, next,
-                    CharacterStyle.class);
 
-            for (int j = 0; j < style.length; j++) {
-                if (style[j] instanceof StyleSpan) {
-                    int s = ((StyleSpan) style[j]).getStyle();
+            CharacterStyle[] spans = text.getSpans(i, next, CharacterStyle.class);
+            for (int j = 0; j < spans.length; j++) {
+                if (spans[j] instanceof StyleSpan) {
+                    int style = ((StyleSpan) spans[j]).getStyle();
 
-                    if ((s & Typeface.BOLD) != 0) {
+                    if ((style & Typeface.BOLD) != 0) {
                         out.append("<b>");
                     }
-                    if ((s & Typeface.ITALIC) != 0) {
+
+                    if ((style & Typeface.ITALIC) != 0) {
                         out.append("<i>");
                     }
                 }
-                if (style[j] instanceof TypefaceSpan) {
-                    String s = ((TypefaceSpan) style[j]).getFamily();
 
-                    if ("monospace".equals(s)) {
-                        out.append("<tt>");
-                    }
-                }
-                if (style[j] instanceof SuperscriptSpan) {
-                    out.append("<sup>");
-                }
-                if (style[j] instanceof SubscriptSpan) {
-                    out.append("<sub>");
-                }
-                if (style[j] instanceof UnderlineSpan) {
+                if (spans[j] instanceof UnderlineSpan) {
                     out.append("<u>");
                 }
-                if (style[j] instanceof StrikethroughSpan) {
-                    out.append("<strike>");
+
+                // Use standard strikethrough tag <del> rather than <s> or <strike>
+                if (spans[j] instanceof StrikethroughSpan) {
+                    out.append("<del>");
                 }
-                if (style[j] instanceof URLSpan) {
+
+                if (spans[j] instanceof UnknownHtmlSpan) {
+                    out.append(((UnknownHtmlSpan)spans[j]).getContent());
+                }
+
+                if (spans[j] instanceof URLSpan) {
                     out.append("<a href=\"");
-                    out.append(((URLSpan) style[j]).getURL());
+                    out.append(((URLSpan) spans[j]).getURL());
                     out.append("\">");
                 }
-                if (style[j] instanceof ImageSpan) {
+
+                if (spans[j] instanceof ImageSpan) {
                     out.append("<img src=\"");
-                    out.append(((ImageSpan) style[j]).getSource());
+                    out.append(((ImageSpan) spans[j]).getSource());
                     out.append("\">");
 
                     // Don't output the dummy character underlying the image.
                     i = next;
                 }
-                if (style[j] instanceof AbsoluteSizeSpan) {
-                    out.append("<font size =\"");
-                    out.append(((AbsoluteSizeSpan) style[j]).getSize() / 6);
-                    out.append("\">");
-                }
-                if (style[j] instanceof ForegroundColorSpan) {
-                    out.append("<font color =\"#");
-                    String color = Integer.toHexString(((ForegroundColorSpan)
-                            style[j]).getForegroundColor() + 0x01000000);
-                    while (color.length() < 6) {
-                        color = "0" + color;
-                    }
-                    out.append(color);
-                    out.append("\">");
-                }
             }
 
-            withinStyle(out, text, i, next);
+            Html.withinStyle(out, text, i, next);
 
-            for (int j = style.length - 1; j >= 0; j--) {
-                if (style[j] instanceof ForegroundColorSpan) {
-                    out.append("</font>");
-                }
-                if (style[j] instanceof AbsoluteSizeSpan) {
-                    out.append("</font>");
-                }
-                if (style[j] instanceof URLSpan) {
+            for (int j = spans.length - 1; j >= 0; j--) {
+                if (spans[j] instanceof URLSpan) {
                     out.append("</a>");
                 }
-                if (style[j] instanceof StrikethroughSpan) {
-                    out.append("</strike>");
+
+                if (spans[j] instanceof StrikethroughSpan) {
+                    out.append("</del>");
                 }
-                if (style[j] instanceof UnderlineSpan) {
+
+                if (spans[j] instanceof UnderlineSpan) {
                     out.append("</u>");
                 }
-                if (style[j] instanceof SubscriptSpan) {
-                    out.append("</sub>");
-                }
-                if (style[j] instanceof SuperscriptSpan) {
-                    out.append("</sup>");
-                }
-                if (style[j] instanceof TypefaceSpan) {
-                    String s = ((TypefaceSpan) style[j]).getFamily();
 
-                    if (s.equals("monospace")) {
-                        out.append("</tt>");
-                    }
-                }
-                if (style[j] instanceof StyleSpan) {
-                    int s = ((StyleSpan) style[j]).getStyle();
+                if (spans[j] instanceof StyleSpan) {
+                    int style = ((StyleSpan) spans[j]).getStyle();
 
-                    if ((s & Typeface.BOLD) != 0) {
+                    if ((style & Typeface.BOLD) != 0) {
                         out.append("</b>");
                     }
-                    if ((s & Typeface.ITALIC) != 0) {
+
+                    if ((style & Typeface.ITALIC) != 0) {
                         out.append("</i>");
                     }
                 }
             }
         }
 
-        if (nl == 1) {
-            out.append("<br>\n");
-            return false;
-        } else {
-            for (int i = 2; i < nl; i++) {
+        if (start != end) {
+            for (int i = 0; i < nl; i++) {
                 out.append("<br>");
             }
-            return !last;
         }
     }
 
-    public static void withinStyle(StringBuilder out, CharSequence text,
+    private static String tidy(String html) {
+        return html.replaceAll("</ul>(<br>)?", "</ul>").replaceAll("</blockquote>(<br>)?", "</blockquote>");
+    }
+
+    private static void withinStyle(StringBuilder out, CharSequence text,
                                     int start, int end) {
         if (text.subSequence(start, end).toString().equals(UnknownHtmlSpan.TEXT))
             return;
