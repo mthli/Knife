@@ -24,6 +24,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.ext.LexicalHandler;
 
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -140,7 +141,7 @@ public class Html {
     public static String toHtml(Spanned text) {
         StringBuilder out = new StringBuilder();
         withinHtml(out, text);
-        return out.toString();
+        return tidy(out.toString());
     }
 
     /**
@@ -174,7 +175,7 @@ public class Html {
                 } else if (styles[0] instanceof QuoteSpan) {
                     withinQuote(out, text, i, next++);
                 } else if (styles[0] instanceof UnknownHtmlSpan) {
-                    withinUnknown((UnknownHtmlSpan)styles[0], out);
+                    withinUnknown((UnknownHtmlSpan) styles[0], out);
                 } else {
                     withinContent(out, text, i, next);
                 }
@@ -262,30 +263,6 @@ public class Html {
         }
     }
 
-    private static void withinBlockquote(StringBuilder out, Spanned text,
-                                         int start, int end) {
-        out.append("<p>");
-
-        int next;
-        for (int i = start; i < end; i = next) {
-            next = TextUtils.indexOf(text, '\n', i, end);
-            if (next < 0) {
-                next = end;
-            }
-
-            int nl = 0;
-
-            while (next < end && text.charAt(next) == '\n') {
-                nl++;
-                next++;
-            }
-
-            withinParagraph(out, text, i, next - nl, nl);
-        }
-
-        out.append("</p>\n");
-    }
-
     private static void withinParagraph(StringBuilder out, Spanned text, int start, int end, int nl) {
         int next;
 
@@ -293,6 +270,7 @@ public class Html {
             next = text.nextSpanTransition(i, end, CharacterStyle.class);
 
             CharacterStyle[] spans = text.getSpans(i, next, CharacterStyle.class);
+
             for (int j = 0; j < spans.length; j++) {
                 if (spans[j] instanceof StyleSpan) {
                     int style = ((StyleSpan) spans[j]).getStyle();
@@ -325,6 +303,10 @@ public class Html {
                     out.append("\">");
                 }
 
+                if (spans[j] instanceof CommentSpan) {
+                    out.append("<!--");
+                }
+
                 if (spans[j] instanceof ImageSpan) {
                     out.append("<img src=\"");
                     out.append(((ImageSpan) spans[j]).getSource());
@@ -348,6 +330,10 @@ public class Html {
 
                 if (spans[j] instanceof UnderlineSpan) {
                     out.append("</u>");
+                }
+
+                if (spans[j] instanceof CommentSpan) {
+                    out.append("-->");
                 }
 
                 if (spans[j] instanceof StyleSpan) {
@@ -415,7 +401,7 @@ public class Html {
 }
 
 @SuppressWarnings("deprecation")
-class HtmlToSpannedConverter implements ContentHandler {
+class HtmlToSpannedConverter implements ContentHandler, LexicalHandler {
 
     private static final float[] HEADER_SIZES = {
             1.5f, 1.4f, 1.3f, 1.2f, 1.1f, 1f,
@@ -442,6 +428,7 @@ class HtmlToSpannedConverter implements ContentHandler {
 
         mReader.setContentHandler(this);
         try {
+            mReader.setProperty(Parser.lexicalHandlerProperty, this);
             mReader.parse(new InputSource(new StringReader(mSource)));
         } catch (IOException e) {
             // We are reading from a string. There should not be IO problems.
@@ -925,9 +912,50 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     public void processingInstruction(String target, String data) throws SAXException {
+        String a = data;
     }
 
     public void skippedEntity(String name) throws SAXException {
+        String a = name;
+    }
+
+    @Override
+    public void startDTD(String name, String publicId, String systemId) throws SAXException {
+
+    }
+
+    @Override
+    public void endDTD() throws SAXException {
+
+    }
+
+    @Override
+    public void startEntity(String name) throws SAXException {
+
+    }
+
+    @Override
+    public void endEntity(String name) throws SAXException {
+
+    }
+
+    @Override
+    public void startCDATA() throws SAXException {
+
+    }
+
+    @Override
+    public void endCDATA() throws SAXException {
+
+    }
+
+    @Override
+    public void comment(char[] ch, int start, int length) throws SAXException {
+        String comment = new String(ch, start, length);
+        int spanStart = mSpannableStringBuilder.length();
+        mSpannableStringBuilder.append(comment);
+        mSpannableStringBuilder.setSpan(new CommentSpan(comment),
+                spanStart, mSpannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private static class Bold { }
