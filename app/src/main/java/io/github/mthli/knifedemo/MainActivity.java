@@ -27,6 +27,8 @@ public class MainActivity extends Activity {
     private static final String LINK = "<a href=\"https://github.com/mthli/Knife\">Link</a>";
     private static final String BLINK = "<blink meno=\"onko\">" +
             "<a href=\"https://github.com/mthli/Knife\">Link</a>" +
+            "<!-- THIS IS A COMMENT -->" +
+            "<br></ br>" +
             "<bubo><ul><li>asdfg</li></ul><blockquote>Quote</blockquote><i>lala</i></bubo>" +
             "<fero /><u>Underline</u></blink>";
     private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK + BLINK;
