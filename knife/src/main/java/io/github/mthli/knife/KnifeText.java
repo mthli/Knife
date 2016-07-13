@@ -890,13 +890,13 @@ public class KnifeText extends EditText implements TextWatcher {
 
     public void fromHtml(String source) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(KnifeParser.fromHtml(source));
+        builder.append(Html.fromHtml(source));
         switchToKnifeStyle(builder, 0, builder.length());
         setText(builder);
     }
 
     public String toHtml() {
-        return KnifeParser.toHtml(getEditableText());
+        return Html.toHtml(getEditableText());
     }
 
     protected void switchToKnifeStyle(Editable editable, int start, int end) {

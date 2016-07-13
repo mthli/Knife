@@ -87,6 +87,15 @@
                          android:background="?android:selectableItemBackground">
             </ImageButton>
 
+            <ImageButton android:id="@+id/html"
+                android:contentDescription="@null"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_dialog_map"
+                android:scaleType="center"
+                android:background="?android:selectableItemBackground">
+            </ImageButton>
+
         </LinearLayout>
 
     </HorizontalScrollView>

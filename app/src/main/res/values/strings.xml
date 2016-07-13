@@ -24,5 +24,6 @@
     <string name="toast_quote">Quote</string>
     <string name="toast_insert_link">Insert link</string>
     <string name="toast_format_clear">Format clear</string>
+    <string name="toast_html">Convert text to HTML</string>
 
 </resources>
