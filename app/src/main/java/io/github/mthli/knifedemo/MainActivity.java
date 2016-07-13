@@ -18,20 +18,30 @@ import io.github.mthli.knife.KnifeText;
 import io.github.mthli.knife.history.KnifeHistory;
 
 public class MainActivity extends Activity {
-    private static final String BOLD = "<b>Bold</b><br><br>";
-    private static final String ITALIT = "<i>Italic</i><br><br>";
-    private static final String UNDERLINE = "<u>Underline</u><br><br>";
-    private static final String STRIKETHROUGH = "<s>Strikethrough</s><br><br>"; // <s> or <strike> or <del>
-    private static final String BULLET = "<ul><li>asdfg</li></ul>";
-    private static final String QUOTE = "<blockquote>Quote</blockquote>";
-    private static final String LINK = "<a href=\"https://github.com/mthli/Knife\">Link</a>";
-    private static final String BLINK = "<blink meno=\"onko\">" +
-            "<a href=\"https://github.com/mthli/Knife\">Link</a>" +
-            "<!-- THIS IS A COMMENT -->" +
-            "<br></ br></br>" +
-            "<bubo><ul><li>asdfg</li></ul><blockquote>Quote</blockquote><i>lala</i></bubo>" +
-            "<fero /><u>Underline</u></blink>";
-    private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK + BLINK;
+//    private static final String BOLD = "<b>Bold</b><br><br>";
+//    private static final String ITALIC = "<i>Italic</i><br><br>";
+//    private static final String UNDERLINE = "<u>Underline</u><br><br><br><br>";
+//    private static final String STRIKETHROUGH = "<s>Strikethrough</s><br><br>"; // <s> or <strike> or <del>
+//    private static final String BULLET = "<ul><li>asdfg</li></ul>";
+//    private static final String QUOTE = "<blockquote>Quote</blockquote>";
+//    private static final String LINK = "<a href=\"https://github.com/mthli/Knife\">Link</a>";
+//    private static final String BLINK =
+//            "<a href=\"https://github.com/mthli/Knife\">Link</a>" +
+//            "<!-- THIS IS A COMMENT --> <br><br><br><br>" +
+//            "<ul><li>asdfg<br><br></li></ul><blockquote>Quote<br><br></blockquote>" +
+//            "<blink meno=\"onko\">" +
+//            "<!-- THIS IS A COMMENT --> <br><br><br><br>" +
+//            "<ul><li>asdfg<br><br></li></ul><blockquote>Quote</blockquote><bubo>" +
+//            "<i>lala</i></bubo>" +
+//            "<fero /><u>Underline</u></blink>";
+//private static final String EXAMPLE = BOLD + ITALIC + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK + BLINK;
+
+
+    private static final String TEST1 = "<blockquote>Quote</blockquote>";
+    private static final String TEST2 = "<div><blockquote>Quote</blockquote></div>";
+    private static final String TEST3 = "<test3><!-- THIS IS A COMMENT --><br><blockquote>Quote</blockquote></test3>";
+    private static final String TEST4 = "<test4><fero><br><blockquote>Quote</blockquote></fero></test4>";
+    private static final String EXAMPLE = TEST2 + TEST4;// + TEST1;//BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK + BLINK;
 
     private KnifeText knife;
     private MenuItem undoItem;
