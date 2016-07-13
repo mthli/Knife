@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
 
 
     private static final String TEST1 = "<blockquote>Quote</blockquote>";
-    private static final String TEST2 = "<div><blockquote>Quote</blockquote></div>";
+    private static final String TEST2 = "<test2><blockquote>Quote</blockquote></test2>";
     private static final String TEST3 = "<test3><!-- THIS IS A COMMENT --><br><blockquote>Quote</blockquote></test3>";
     private static final String TEST4 = "<test4><fero><br><blockquote>Quote</blockquote></fero></test4>";
     private static final String EXAMPLE = TEST2 + TEST4;// + TEST1;//BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK + BLINK;
