@@ -15,6 +15,8 @@ Support Android 4.0+
 
 Here has a [demo apk](https://github.com/mthli/Knife/releases/download/v1.1/KnifeDemo.1.1.apk "KnifeDemo.1.1.apk"), and it's [source code](https://github.com/mthli/Knife/tree/master/app "KnifeDemo.1.1.apk's source code"), very easy to understand~
 
+More experiments see [mthli/Type](https://github.com/mthli/Type "mthli/Type")
+
 ## Api
 
  - `bold(boolean valid)` __bold__ the selected text.
