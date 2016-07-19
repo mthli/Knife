@@ -57,7 +57,7 @@ If you want to get more control of the editable text, just extend KnifeText to g
  
  - `app:historyEnable` `true` to enable record history, so you can `redo()` and `undo()`.
     
- - `app:historySize` the record max limit.
+ - `app:maxHistoryCapacity` the record max limit.
     
  - `app:linkColor`
     
