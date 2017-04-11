@@ -61,11 +61,11 @@ public class KnifeTagHandler implements Html.TagHandler {
         }
     }
 
-    private void start(Editable output, Object mark) {
+    void start(Editable output, Object mark) {
         output.setSpan(mark, output.length(), output.length(), Spanned.SPAN_MARK_MARK);
     }
 
-    private void end(Editable output, Class kind, Object... replaces) {
+    void end(Editable output, Class kind, Object... replaces) {
         Object last = getLast(output, kind);
         int start = output.getSpanStart(last);
         int end = output.length();
@@ -78,7 +78,7 @@ public class KnifeTagHandler implements Html.TagHandler {
         }
     }
 
-    private static Object getLast(Editable text, Class kind) {
+    static Object getLast(Editable text, Class kind) {
         Object[] spans = text.getSpans(0, text.length(), kind);
 
         if (spans.length == 0) {

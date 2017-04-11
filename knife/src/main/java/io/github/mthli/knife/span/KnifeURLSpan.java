@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.mthli.knife;
+package io.github.mthli.knife.span;
 
 import android.os.Parcel;
 import android.text.TextPaint;
@@ -47,5 +47,23 @@ public class KnifeURLSpan extends URLSpan {
     public void updateDrawState(TextPaint ds) {
         ds.setColor(linkColor != 0 ? linkColor : ds.linkColor);
         ds.setUnderlineText(linkUnderline);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        KnifeURLSpan that = (KnifeURLSpan) o;
+
+        return linkColor == that.linkColor && linkUnderline == that.linkUnderline;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = linkColor;
+        result = 31 * result + (linkUnderline ? 1 : 0);
+        return result;
     }
 }
